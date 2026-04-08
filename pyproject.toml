@@ -44,8 +44,7 @@ requires-python = ">=3.11"
 # Repository = "https://github.com/fitzz-ftw/ftw-patch.git"
 
 [project.scripts]
-# ftw-terminal-color-check = "fitzzftw.patch.base:color_terminal_check"
-# ftwpatch = "fitzzftw.patch.ftw_patch:prog_ftw_patch"
+ftwpkipassword = "ftwpki.baselibs.passwd:prog_password_enc"
 
 [project.optional-dependencies]
 doc = [

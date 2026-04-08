@@ -38,6 +38,13 @@ Documentation
 
 .. toctree::
    :maxdepth: 1
+   :caption: User Guides:
+
+   user/password_enc
+
+
+.. toctree::
+   :maxdepth: 1
    :caption: Developer Guides:
    
    index_get_started
