@@ -26,7 +26,7 @@ sicher auf die Festplatte geschrieben.
 
 >>> import os
 >>> from pathlib import Path
->>> from ftwpki.baselibs.caroot import CertificateAuthority
+>>> from ftwpki.ca_root.caroot import CertificateAuthority
 >>> from ftwpki.baselibs.core import save_pem
 
 Verzeichnis für die PKI-Artefakte vorbereiten
@@ -46,11 +46,18 @@ CA-Instanz mit Metadaten initialisieren
 ...     organization="FTW Projekte"
 ... )
 
+>>> ca
+CertificateAuthority(subject=<Name(C=DE,ST=Hessen,L=Frankfurt,O=FTW Projekte,CN=FTW Dev Root CA)>)
+
 Schlüsselpaar und Zertifikat generieren
 Der private Schlüssel wird mit der Passphrase verschlüsselt.
 
 >>> passphrase = "1234"
 >>> ca.create_root_certificate(passphrase=passphrase, days=3650)
+
+
+>>> ca.public_key # doctest: +ELLIPSIS
+b'-----BEGIN PUBLIC KEY-----...
 
 PEM-Daten dauerhaft speichern.
 Wir nutzen 'is_private=True' für den Schlüssel (chmod 600).
@@ -75,6 +82,16 @@ Einlesen des Zertifikats (als Byte-String)
 >>> cert_bytes = cert_path.read_bytes()
 >>> b"BEGIN CERTIFICATE" in cert_bytes
 True
+
+
+>>> ca.create_root_certificate(passphrase=passphrase, days=3650)
+
+
+>>> ca.generate_key_pair("")
+Traceback (most recent call last):
+    ...
+ValueError: Root CA private key MUST be protected by a strong passphrase.
+
 
 
 .. SECTION - Teardown

@@ -65,13 +65,38 @@ class CertificateAuthority:
 
     @property
     def private_key(self) -> bytes:
+        """
+        The private key of the Root CA **(ro)**.
+
+        **Security Note:** This data is highly sensitive and must be
+        stored securely (e.g., encrypted or in a HSM).
+
+        :return: The PEM encoded private key as bytes.
+        """
         return self._private_key
 
     @property
     def public_key(self) -> bytes:
+        """
+        The public key of the Root CA **(ro)**.
+
+        This key is extracted from the CA certificate and can be used
+        to verify the CA's own signature.
+
+        :return: The PEM encoded public key (SubjectPublicKeyInfo) as bytes.
+        """
         return self._public_key
 
+    @property
     def certificate(self) -> bytes:
+        """
+        The Root CA certificate **(ro)**.
+
+        This self-signed certificate serves as the trust anchor for
+        the entire PKI hierarchy.
+
+        :return: The PEM encoded X.509 certificate as bytes.
+        """
         return self._ca_cert
 
     def generate_key_pair(self, passphrase: str) -> None:

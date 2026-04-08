@@ -13,7 +13,7 @@ where = ["src"]
 
 [tool.setuptools_scm]
 tag_regex = '^(?P<prefix>v)?(?P<version>[^\+|-]+)(?P<suffix>-test)?$'
-write_to = "src/ftwpki/caroot/_version.py"
+write_to = "src/ftwpki/ca_root/_version.py"
 
 [project]
 classifiers = [
