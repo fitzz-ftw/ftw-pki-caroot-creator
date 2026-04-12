@@ -63,7 +63,7 @@ PEM-Daten dauerhaft speichern.
 Wir nutzen 'is_private=True' für den Schlüssel (chmod 600).
 
 >>> save_pem(ca.private_key, key_path, is_private=True)
->>> save_pem(ca.certificate(), cert_path)
+>>> save_pem(ca.certificate, cert_path)
 
 Überprüfung
 
