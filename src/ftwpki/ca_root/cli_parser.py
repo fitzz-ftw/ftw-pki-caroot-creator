@@ -10,18 +10,42 @@ cli_parser
 Modul cli_parser documentation
 """
 
+from argparse import Namespace
 from pathlib import Path
+from typing import cast
 
 from ftwpki.baselibs.cli_parser import DistinguishedNameParser
+from ftwpki.ca_root.protocols import CaInitProtocol
 
 
 class CaInitParser(DistinguishedNameParser):
     def _setup_parser(self: "CaInitParser") -> None:
         super()._setup_parser() 
         self.add_argument("passphrasefile")
-        self.add_argument("-k", "--key", "--private-key", dest="private_key")
-        self.add_argument("-c", "--cert", "--public-key", dest="public_key")
-        self.add_argument("--privatdir", dest="privatdir")
+        self.add_argument("-k", "--key", 
+                          "--private-key", 
+                          dest="private_key",
+                          default="",
+                          )
+        self.add_argument("-c", "--cert", "--certificate", 
+                          dest="certificate",
+                          default="",
+                          )
+        self.add_argument(
+                            "-p",
+                            "--pub",
+                            "--public-key",
+                            dest="public_key",
+                            default="",
+                        )
+        self.add_argument("--privatdir", 
+                          dest="privatdir",
+                          default="")
+
+    def parse_args(
+        self, args: list[str] | None = None, namespace: Namespace | None = None
+    ) -> CaInitProtocol:
+        return cast(CaInitProtocol,super().parse_args(args, namespace))    
         
 
 class CaSignParser(DistinguishedNameParser):
@@ -29,7 +53,7 @@ class CaSignParser(DistinguishedNameParser):
         super()._setup_parser() 
         self.add_argument("-k", "--key", "--private-key", dest="private_key")
         self.add_argument("--privatdir", dest="privatdir")
-        
+
 
 
 if __name__ == "__main__": # pragma: no cover

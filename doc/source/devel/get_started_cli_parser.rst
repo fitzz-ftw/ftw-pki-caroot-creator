@@ -21,9 +21,10 @@ Namespace(countryName='',
     dnsubject={}, 
     conf_file=None, 
     passphrasefile='passwort.txt', 
-    private_key=None, 
-    public_key=None, 
-    privatdir=None)
+    private_key='', 
+    certificate='',
+    public_key='', 
+    privatdir='')
 
 >>> cip.parse_args(["-subj", "/CN=Test" ,"passwort.txt"]) #doctest: +NORMALIZE_WHITESPACE
 Namespace(countryName='', 
@@ -35,9 +36,10 @@ Namespace(countryName='',
     dnsubject={'commonName': 'Test'}, 
     conf_file=None, 
     passphrasefile='passwort.txt', 
-    private_key=None, 
-    public_key=None, 
-    privatdir=None)
+    private_key='',
+    certificate='', 
+    public_key='', 
+    privatdir='')
 
 >>> from ftwpki.ca_root.cli_parser import CaSignParser
 

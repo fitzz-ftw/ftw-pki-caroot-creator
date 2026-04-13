@@ -96,6 +96,7 @@ ValueError: Root CA private key MUST be protected by a strong passphrase.
 
 .. SECTION - Teardown
 
+>>> env.clean_home()
 >>> env.teardown()
 
 .. !SECTION

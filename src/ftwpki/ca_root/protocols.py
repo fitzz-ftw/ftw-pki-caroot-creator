@@ -20,6 +20,7 @@ class CaInitProtocol(DistinguishedNameProtocol):
     private_key:str
     privatdir:str
     passphrasefile:str
+    certificate:str
 
 class CaSignProtocol(DistinguishedNameProtocol):
     private_key: str
