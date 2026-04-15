@@ -15,7 +15,7 @@ from pathlib import Path
 
 from ftwpki.baselibs.core import save_pem
 from ftwpki.baselibs.passwd import PasswordManager
-from ftwpki.baselibs.utils import toml2dn
+from ftwpki.baselibs.toml_utils import toml2dn
 from ftwpki.ca_root.caroot import CertificateAuthority
 from ftwpki.ca_root.cli_parser import CaInitParser
 

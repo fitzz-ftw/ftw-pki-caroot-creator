@@ -45,7 +45,7 @@
 
 .. SECTION - Configuration
 
->>> from ftwpki.baselibs.utils import toml2dn
+>>> from ftwpki.baselibs.toml_utils import toml2dn
 >>> from ftwpki.ca_root.cli_parser import CaInitParser
 
 >>> ca_parser = CaInitParser(prog="ftwpkicaroot")
