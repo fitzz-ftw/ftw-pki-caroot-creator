@@ -41,13 +41,3 @@ Namespace(countryName='',
     public_key='', 
     privatdir='')
 
->>> from ftwpki.ca_root.cli_parser import CaSignParser
-
->>> csp = CaSignParser()
->>> csp #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-CaSignParser(prog=..., 
-    usage=None, 
-    description=None, 
-    formatter_class=<class 'argparse.HelpFormatter'>, 
-    conflict_handler='error', 
-    add_help=True)

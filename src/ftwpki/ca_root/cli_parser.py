@@ -14,7 +14,10 @@ from argparse import Namespace
 from pathlib import Path
 from typing import cast
 
-from ftwpki.baselibs.cli_parser import DistinguishedNameParser
+from ftwpki.baselibs.cli_parser import (
+    CSRSigningParser,
+    DistinguishedNameParser,
+)
 from ftwpki.ca_root.protocols import CaInitProtocol
 
 
@@ -48,11 +51,6 @@ class CaInitParser(DistinguishedNameParser):
         return cast(CaInitProtocol,super().parse_args(args, namespace))    
         
 
-class CaSignParser(DistinguishedNameParser):
-    def _setup_parser(self) -> None:
-        super()._setup_parser() 
-        self.add_argument("-k", "--key", "--private-key", dest="private_key")
-        self.add_argument("--privatdir", dest="privatdir")
 
 
 

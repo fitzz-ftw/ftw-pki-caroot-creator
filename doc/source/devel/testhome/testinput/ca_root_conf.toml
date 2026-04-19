@@ -5,9 +5,18 @@ commonName = "My Root CA"
 localityName = "Somewherecity"
 organizationalUnitName = "Security"
 
+[policy.ext]
+ocspURI = "http://ocsp.deine-pki.test"
+crlURI = "http://pki.deine-pki.test/crl"
+caIssuerURI = "http://pki.deine-pki.test/ca.crt"
 
 [policy.intermediate.dn]
 countryName = "match"
 organizationName = "match"
 commonName = "supplied"
+localityName = "optional"
+organizationalUnitName="optional"
+stateOrProvinceName="supplied"
 
+[policy.intermediate.ext]
+crlURI = "http://pki.deine-pki.test/crl_intermediate"

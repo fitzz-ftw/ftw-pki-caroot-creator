@@ -71,7 +71,7 @@ Namespace(countryName='DE',
     public_key='ca.pub.pem', 
     privatdir='privat')
 
-.. !SECTION
+.. !SECTION - Configuration
 
 .. SECTION - Passwordhandling
 
@@ -112,13 +112,13 @@ Enter Passphrase:
 >>> save_pem(ca_root.certificate, Path(f"{args.certificate}"), is_private=False)
 
 
-..!SECTION
+..!SECTION - Passwordhandling
 
 ..!SECTION
 
 .. SECTION - Teardown
 
->>> env.clean_home()
+>> env.clean_home()
 >>> env.teardown()
 
 .. !SECTION
