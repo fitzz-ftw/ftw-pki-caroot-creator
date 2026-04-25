@@ -59,7 +59,7 @@ def ca_test_env(monkeypatch):
     project_root = Path(__file__).parent.parent
     testhome_path = project_root / "doc" / "source" / "devel" / "testhome"
 
-    from fitzzftw.develtool.testinfra import TestHomeEnvironment
+    from fitzzftw.devtools.testinfra import TestHomeEnvironment
 
     env = TestHomeEnvironment(testhome_path)
 
