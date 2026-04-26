@@ -1,4 +1,5 @@
-
+The Signing Programm
+######################
 
 .. SECTION - Setup
 
@@ -51,6 +52,7 @@
 .. SECTION - Programm Signing
 
 .. SECTION - Configuration
+
 >>> from ftwpki.baselibs.toml_utils import toml2dn_policy, toml2ext_policy
 >>> from ftwpki.baselibs.cli_parser import CSRSigningParser
 >>> from ftwpki.baselibs.policies import IntermediatePolicy
@@ -88,6 +90,7 @@ Namespace(countryName='match',
 .. !SECTION
 
 .. SECTION - Validating
+
 >>> from ftwpki.baselibs.core import (
 ...     load_certificate_from_pem, 
 ...     load_csr_from_pem,
@@ -105,7 +108,7 @@ Namespace(countryName='match',
 >>> validate_result=val_dn.validate(get_subject_dict(csr))
 >>> validate_result.errors.sort()
 
->> if not validate_result.is_valid:
+>>> if not validate_result.is_valid:
 ...     for error in validate_result.errors:
 ...         print(error)
 ...     print("!!!Programstop!!!")
@@ -119,6 +122,7 @@ Returncode: 1
 
 
 .. SECTION - Passwordhandling
+
 >>> from ftwpki.baselibs.passwd import PasswordManager
 >>> pwd_man = PasswordManager(private_dir=args.private_dir)
 >>> pwd_man
@@ -172,6 +176,7 @@ Enter Password:
 
 .. !SECTION - Signing
 .. SECTION - Transferfile
+
 >>> from ftwpki.baselibs.utils import create_encrypted_zipfile
 >>> zipped_data = create_encrypted_zipfile(
 ...     signed_cert, # user_cert
@@ -201,6 +206,7 @@ b'Content-Transfer-Encoding: base64\n'
 .. !SECTION
 
 .. SECTION - Database openssl compatible
+
 >>> from ftwpki.baselibs.openssl_comp import DbOpensslFile
 >>> db_dir = Path("db")
 >>> if not db_dir.is_dir():

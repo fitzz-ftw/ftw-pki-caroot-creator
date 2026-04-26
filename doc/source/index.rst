@@ -40,7 +40,6 @@ Documentation
    :maxdepth: 1
    :caption: User Guides:
 
-   user/password_enc
 
 
 .. toctree::

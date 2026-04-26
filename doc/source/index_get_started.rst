@@ -11,3 +11,8 @@ supported Python versions (3.11 - 3.15).
    :caption: Module Guides:
 
    devel/get_started_caroot
+   devel/get_started_cli_parser
+   devel/get_started_programms
+   devel/get_started_prog_ca_sign
+   devel/get_started_protocols
+

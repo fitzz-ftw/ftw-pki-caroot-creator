@@ -44,7 +44,7 @@ requires-python = ">=3.11"
 # Repository = "https://github.com/fitzz-ftw/ftw-patch.git"
 
 [project.scripts]
-ftwpkipassword = "ftwpki.baselibs.passwd:prog_password_enc"
+# ftwpkipassword = "ftwpki.baselibs.passwd:prog_password_enc"
 
 [project.optional-dependencies]
 doc = [
