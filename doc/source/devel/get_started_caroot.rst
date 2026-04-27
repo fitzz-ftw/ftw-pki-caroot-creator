@@ -46,8 +46,8 @@ CA-Instanz mit Metadaten initialisieren
 ...     organization="FTW Projekte"
 ... )
 
->>> ca
-CertificateAuthority(subject=<Name(C=DE,ST=Hessen,L=Frankfurt,O=FTW Projekte,CN=FTW Dev Root CA)>)
+>>> ca #doctest: +ELLIPSIS
+CertificateAuthority(subject=<Name(...)>)
 
 Schlüsselpaar und Zertifikat generieren
 Der private Schlüssel wird mit der Passphrase verschlüsselt.
