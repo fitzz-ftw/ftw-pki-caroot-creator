@@ -108,16 +108,19 @@ Namespace(countryName='match',
 >>> validate_result=val_dn.validate(get_subject_dict(csr))
 >>> validate_result.errors.sort()
 
->>> if not validate_result.is_valid:
-...     for error in validate_result.errors:
-...         print(error)
-...     print("!!!Programstop!!!")
-...     print("Returncode: 1")
-  - [localityName]: DISALLOWED
-  - [organizationalUnitName]: DISALLOWED
-  - [stateOrProvinceName]: DISALLOWED
-!!!Programstop!!!
-Returncode: 1
+.. code-block:: python
+
+     >> if not validate_result.is_valid:
+     ...     for error in validate_result.errors:
+     ...         print(error)
+     ...     print("!!!Programstop!!!")
+     ...     print("Returncode: 1")
+     - [localityName]: DISALLOWED
+     - [organizationalUnitName]: DISALLOWED
+     - [stateOrProvinceName]: DISALLOWED
+     !!!Programstop!!!
+     Returncode: 1
+
 .. !SECTION - Validating
 
 
@@ -177,8 +180,8 @@ Enter Password:
 .. !SECTION - Signing
 .. SECTION - Transferfile
 
->>> from ftwpki.baselibs.utils import create_encrypted_zipfile
->>> zipped_data = create_encrypted_zipfile(
+>>> from ftwpki.baselibs.transport import encrypt_transport_package
+>>> zipped_data = encrypt_transport_package(
 ...     signed_cert, # user_cert
 ...     ca_cert, # root_ca_cert
 ...     signed_cert, # recipient_cert
