@@ -15,7 +15,6 @@ from pathlib import Path
 from typing import cast
 
 from ftwpki.baselibs.cli_parser import (
-    CSRSigningParser,
     DistinguishedNameParser,
 )
 from ftwpki.ca_root.protocols import CaInitProtocol

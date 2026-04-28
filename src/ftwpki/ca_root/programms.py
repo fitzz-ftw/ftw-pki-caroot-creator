@@ -115,6 +115,7 @@ def prog_ca_root_singing(argv: list[str] | None = None) -> int:
         zipped_data = encrypt_transport_package(
             signed_cert,  # user_cert
             ca_cert,  # root_ca_cert
+            private_key_obj,
             signed_cert,  # recipient_cert
             signed_cert,
             ca_cert,

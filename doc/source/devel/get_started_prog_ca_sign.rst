@@ -70,7 +70,7 @@ Namespace(countryName='match',
     organizationName='match', 
     organizationalUnitName='optional', 
     commonName='supplied', 
-    policy_name='intermediate', 
+    policy_name='intermediate',
     conf_file=...Path('ca_root_conf.toml'), 
     private_key='privat/ca.key.pem', 
     private_dir='privat',
@@ -184,6 +184,7 @@ Enter Password:
 >>> zipped_data = encrypt_transport_package(
 ...     signed_cert, # user_cert
 ...     ca_cert, # root_ca_cert
+...     private_key_obj,
 ...     signed_cert, # recipient_cert
 ...     signed_cert,
 ...     ca_cert,
