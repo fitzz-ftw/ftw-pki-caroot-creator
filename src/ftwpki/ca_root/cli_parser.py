@@ -6,8 +6,8 @@
 cli_parser
 ===============================
 
-
-Modul cli_parser documentation
+Command-line interface parser for Root-CA initialization, handling
+Distinguished Name data and file path configuration. (rw)
 """
 
 from argparse import Namespace
@@ -20,37 +20,71 @@ from ftwpki.baselibs.cli_parser import (
 from ftwpki.ca_root.protocols import CaInitProtocol
 
 
+# CLASS - CaInitParser
 class CaInitParser(DistinguishedNameParser):
-    def _setup_parser(self: "CaInitParser") -> None:
-        super()._setup_parser() 
-        self.add_argument("passphrasefile")
-        self.add_argument("-k", "--key", 
-                          "--private-key", 
-                          dest="private_key",
-                          default="",
-                          )
-        self.add_argument("-c", "--cert", "--certificate", 
-                          dest="certificate",
-                          default="",
-                          )
+    """
+    Parser for Root-CA initialization arguments. (rw)
+
+    Extends the DistinguishedNameParser to include specific arguments for
+    passphrase secrets, key storage, and certificate filenames.
+    """
+
+    def _setup_parser(self) -> None:
+        """
+        Configure the argument parser with Root-CA specific options. (ro)
+
+        Sets up arguments for the passphrase file, private/public keys,
+        certificates, and the private storage directory.
+        """
+        super()._setup_parser()
         self.add_argument(
-                            "-p",
-                            "--pub",
-                            "--public-key",
-                            dest="public_key",
-                            default="",
-                        )
-        self.add_argument("--privatdir", 
-                          dest="privatdir",
-                          default="")
+            "passphrasefile", help="Filename of the encrypted secret containing the CA passphrase."
+        )
+        self.add_argument(
+            "-k",
+            "--key",
+            "--private-key",
+            dest="private_key",
+            default="",
+            help="Optional specific filename for the generated private key.",
+        )
+        self.add_argument(
+            "-c",
+            "--cert",
+            "--certificate",
+            dest="certificate",
+            default="",
+            help="Optional specific filename for the root certificate.",
+        )
+        self.add_argument(
+            "-p",
+            "--pub",
+            "--public-key",
+            dest="public_key",
+            default="",
+            help="Optional specific filename for the public key.",
+        )
+        self.add_argument(
+            "--privatdir",
+            dest="privatdir",
+            default="",
+            help="Directory path for private key storage (overrides default).",
+        )
 
     def parse_args(
         self, args: list[str] | None = None, namespace: Namespace | None = None
     ) -> CaInitProtocol:
-        return cast(CaInitProtocol,super().parse_args(args, namespace))    
-        
+        """
+        Parse command-line arguments and cast to CaInitProtocol. (ro)
+
+        :param args: List of command-line argument strings.
+        :param namespace: Existing Namespace object to populate.
+        :returns: Arguments adhering to the CaInitProtocol interface.
+        """
+        return cast(CaInitProtocol, super().parse_args(args, namespace))
 
 
+# !CLASS - CaInitParser
 
 
 if __name__ == "__main__": # pragma: no cover
