@@ -6,8 +6,7 @@
 protocols
 ===============================
 
-
-Modul protocols documentation
+Structural interfaces for the Root-CA management package. (ro)
 """
 
 from pathlib import Path
@@ -15,32 +14,62 @@ from pathlib import Path
 from ftwpki.baselibs.protocols import DistinguishedNameProtocol
 
 
+# CLASS - CaInitProtocol
 class CaInitProtocol(DistinguishedNameProtocol):
-    public_key:str
-    private_key:str
-    privatdir:str
-    passphrasefile:str
-    certificate:str
+    """
+    Structural interface for Root-CA initialization data. (ro)
 
-class CaSignProtocol(DistinguishedNameProtocol):
+    Extends DistinguishedNameProtocol to include all necessary file paths
+    for creating a new Root Certificate Authority.
+    """
+
+    public_key: str
+    """Filename for the generated public key/certificate."""
     private_key: str
+    """Filename for the generated encrypted private key."""
     privatdir: str
+    """Path to the directory where private keys are stored."""
+    passphrasefile: str
+    """Filename of the encrypted passphrase secret."""
+    certificate: str
+    """Filename for the self-signed root certificate."""
 
 
-if __name__ == "__main__": # pragma: no cover
+# !CLASS - CaInitProtocol
+
+
+# CLASS - CaSignProtocol
+class CaSignProtocol(DistinguishedNameProtocol):
+    """
+    Structural interface for Root-CA signing operations. (ro)
+
+    Defines the required attributes to access the Root-CA's private
+    infrastructure for signing requests.
+    """
+
+    private_key: str
+    """Filename of the Root-CA private key to be used for signing."""
+    privatdir: str
+    """Path to the directory containing the private key."""
+
+
+# !CLASS - CaSignProtocol
+
+
+if __name__ == "__main__":  # pragma: no cover
     from doctest import FAIL_FAST, testfile
-    
+
     be_verbose = False
     be_verbose = True
     option_flags = 0
     option_flags = FAIL_FAST
     test_sum = 0
     test_failed = 0
-    
+
     # Pfad zu den dokumentierenden Tests
     testfiles_dir = Path(__file__).parents[3] / "doc/source/devel"
     test_file = testfiles_dir / "get_started_protocols.rst"
-    
+
     if test_file.exists():
         print(f"--- Running Doctest for {test_file.name} ---")
         doctestresult = testfile(
