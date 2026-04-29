@@ -6,8 +6,7 @@
 programms
 ===============================
 
-
-Modul programms documentation
+Main entry points for Root-CA initialization and certificate signing. (rw)
 """
 
 import getpass
@@ -34,6 +33,15 @@ from ftwpki.ca_root.cli_parser import CaInitParser
 
 
 def prog_ca_root_cert(argv: list[str] | None = None) -> int:
+    """
+    Entry point for initializing a new Root-CA. (rw)
+
+    Processes CLI arguments, generates the RSA key pair, and creates the
+    self-signed root certificate.
+
+    :param argv: Optional list of command-line arguments.
+    :returns: Exit code (0 for success, 1 for error).
+    """
     try:
         ca_parser = CaInitParser()
         ca_parser.set_defaults(**toml2dn(argv))
@@ -71,12 +79,22 @@ def prog_ca_root_cert(argv: list[str] | None = None) -> int:
 
 # SECTION - Programm Signing
 def prog_ca_root_singing(argv: list[str] | None = None) -> int:
+    """
+    Entry point for signing Certificate Signing Requests (CSRs). (rw)
+
+    Validates the CSR against the CA policy, signs it using the Root-CA key,
+    and prepares the transport package.
+
+    :param argv: Optional list of command-line arguments.
+    :returns: Exit code (0 for success, 1 for validation error, 2 for other errors).
+    """
     try:
         # SECTION - Configuration
         ca_parser = CSRSigningParser()
         ca_parser.set_defaults(**toml2dn_policy(argv))
         args = ca_parser.parse_args(argv)
         # !SECTION - Configuration
+
         # SECTION - Validating
         ca_cert = load_certificate_from_pem(pem_data=Path(args.certificate).read_bytes())
         csr = load_csr_from_pem(Path(args.certificat_sign_request).read_bytes())
@@ -87,12 +105,14 @@ def prog_ca_root_singing(argv: list[str] | None = None) -> int:
                 print(error)
             return 1
         # !SECTION - Validating
+
         # SECTION - Passwordhandling
         pwd_man = PasswordManager(private_dir=args.private_dir)
         pass_phrase = pwd_man.decrypt_password_file(
             args.passphrasefile, password=getpass.getpass("Enter Password:")
         )
         # !SECTION - Passwordhandling
+
         # SECTION - Signing
         private_key_obj = load_private_key_from_pem(
             pem_data=Path(args.private_key).read_bytes(), passphrase=pass_phrase
@@ -122,9 +142,8 @@ def prog_ca_root_singing(argv: list[str] | None = None) -> int:
         )
 
         transfer_file_path = Path(args.certificat_sign_request).with_suffix(".zip.enc")
-        _ = transfer_file_path.write_bytes(zipped_data)
-
-        #!SECTION - Transferfile
+        transfer_file_path.write_bytes(zipped_data)
+        # !SECTION - Transferfile
 
         # SECTION - Database openssl compatible
         db_dir = Path("db")
@@ -142,7 +161,6 @@ def prog_ca_root_singing(argv: list[str] | None = None) -> int:
 
 
 # !SECTION - Programm Signing
-
 
 if __name__ == "__main__":  # pragma: no cover
     from doctest import FAIL_FAST, testfile

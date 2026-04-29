@@ -108,18 +108,18 @@ Namespace(countryName='match',
 >>> validate_result=val_dn.validate(get_subject_dict(csr))
 >>> validate_result.errors.sort()
 
-.. code-block:: python
-
-     >> if not validate_result.is_valid:
-     ...     for error in validate_result.errors:
-     ...         print(error)
-     ...     print("!!!Programstop!!!")
-     ...     print("Returncode: 1")
-     - [localityName]: DISALLOWED
-     - [organizationalUnitName]: DISALLOWED
-     - [stateOrProvinceName]: DISALLOWED
-     !!!Programstop!!!
-     Returncode: 1
+.. code-block:: text
+   
+   >> if not validate_result.is_valid:
+   ...  for error in validate_result.errors:
+   ...      print(error)
+   ...  print("!!!Programstop!!!")
+   ...  print("Returncode: 1")
+   - [localityName]: DISALLOWED
+   - [organizationalUnitName]: DISALLOWED
+   - [stateOrProvinceName]: DISALLOWED
+   !!!Programstop!!!
+   Returncode: 1
 
 .. !SECTION - Validating
 
