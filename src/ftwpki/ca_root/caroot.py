@@ -6,8 +6,8 @@
 caroot
 ===============================
 
-
-Modul caroot documentation
+Core logic for Root Certificate Authority management, including RSA key pair
+generation and self-signed X.509 certificate creation. (rw)
 """
 
 import datetime
@@ -25,9 +25,13 @@ from cryptography.hazmat.primitives.asymmetric.types import (
 from ftwpki.baselibs.core import create_distinguished_name, generate_rsa_key_pair
 
 
+# CLASS - CertificateAuthority
 class CertificateAuthority:
     """
-    Handles the creation of Root CAs and certificate management.
+    Handler for the creation of Root CAs and certificate management. (rw)
+
+    This class manages the CA's identity (Subject), private key generation,
+    and the issuance of the self-signed root certificate.
     """
 
     def __init__(
@@ -40,16 +44,17 @@ class CertificateAuthority:
         organizational_unit: str = ".",
     ) -> None:
         """
-        Initialize CA metadata based on constants.
+        Initialize CA metadata based on Distinguished Name components. (rw)
 
-        The dot ('.') in organizational_unit prevents the field from being created.
+        A dot ('.') in organizational_unit prevents the field from being created
+        in the final X.509 subject.
 
-        :param common_name: The fullname of the CA.
-        :param country: Two-letter country code.
-        :param state: State or province.
-        :param location: Locality or city.
-        :param organization: Organization name.
-        :param organizational_unit: Organization Unit.
+        :param common_name: The primary name of the CA (e.g., 'Root CA').
+        :param country: Two-letter ISO country code.
+        :param state: State or province name.
+        :param location: Locality or city name.
+        :param organization: Legal name of the organization.
+        :param organizational_unit: Department or unit name (use '.' to omit).
         """
         self._subject = create_distinguished_name(
             common_name=common_name,
@@ -66,69 +71,64 @@ class CertificateAuthority:
     @property
     def private_key(self) -> bytes:
         """
-        The private key of the Root CA **(ro)**.
+        The PEM encoded private key of the Root CA. (ro)
 
         **Security Note:** This data is highly sensitive and must be
-        stored securely (e.g., encrypted or in a HSM).
+        stored securely.
 
-        :return: The PEM encoded private key as bytes.
+        :returns: The private key as PEM encoded bytes.
         """
         return self._private_key
 
     @property
     def public_key(self) -> bytes:
         """
-        The public key of the Root CA **(ro)**.
+        The PEM encoded public key of the Root CA. (ro)
 
-        This key is extracted from the CA certificate and can be used
-        to verify the CA's own signature.
+        Extracted as SubjectPublicKeyInfo for verification purposes.
 
-        :return: The PEM encoded public key (SubjectPublicKeyInfo) as bytes.
+        :returns: The public key as PEM encoded bytes.
         """
         return self._public_key
 
     @property
     def certificate(self) -> bytes:
         """
-        The Root CA certificate **(ro)**.
+        The self-signed Root CA certificate. (ro)
 
-        This self-signed certificate serves as the trust anchor for
-        the entire PKI hierarchy.
+        This certificate serves as the trust anchor for the PKI.
 
-        :return: The PEM encoded X.509 certificate as bytes.
+        :returns: The X.509 certificate as PEM encoded bytes.
         """
         return self._ca_cert
 
     def generate_key_pair(self, passphrase: str) -> None:
         """
-        Generate a 4096-bit RSA key and encrypt it manually using AES-256-CBC.
+        Generate a 4096-bit RSA key pair protected by a passphrase. (rw)
 
-        The resulting byte string follows a custom deterministic format:
-        [16 bytes Salt] + [16 bytes IV] + [AES-256-CBC Encrypted PKCS7-padded PEM]
+        Uses AES-256-CBC encryption and PBKDF2-HMAC-SHA256 derivation
+        for the resulting PEM structure.
 
-        Key Derivation: PBKDF2-HMAC-SHA256, 600,000 iterations.
-
-        :param passphrase: The strong passphrase for encryption.
-        :raises ValueError: If passphrase is empty or '.'.
-        :returns: Composite byte string (Salt | IV | Ciphertext).
+        :param passphrase: The strong passphrase for private key encryption.
+        :raises ValueError: If the passphrase is empty or '.'.
         """
         if not passphrase or passphrase == ".":
             raise ValueError("Root CA private key MUST be protected by a strong passphrase.")
 
         private_pem, public_pem = generate_rsa_key_pair(passphrase)
 
-        # Die CA-Instanz merkt sich die Ergebnisse
         self._private_key = private_pem
         self._public_key = public_pem
 
     def create_root_certificate(self, passphrase: str, days: int = 7300) -> None:
         """
-        Create a self-signed Root CA certificate (v3_ca_cert).
+        Create a self-signed Root CA certificate with v3 extensions. (rw)
 
-        :param private_key_bytes: The PEM encoded private key.
-        :param passphrase: Password for the private key.
-        :param days: Validity period (default 7300 / 20 years).
-        :returns: The certificate in PEM format.
+        Automatically generates a key pair if none exists. Sets BasicConstraints
+        (CA:True) and KeyUsage (keyCertSign, cRLSign) as critical.
+
+        :param passphrase: Password required to load the internal private key.
+        :param days: Validity period in days (default: 7300 / 20 years).
         """
         if not self._private_key:
             self.generate_key_pair(passphrase=passphrase)
@@ -140,7 +140,7 @@ class CertificateAuthority:
 
         builder = x509.CertificateBuilder()
         builder = builder.subject_name(self._subject)
-        builder = builder.issuer_name(self._subject)  # Self-signed
+        builder = builder.issuer_name(self._subject)
         builder = builder.public_key(public_key)
         builder = builder.serial_number(x509.random_serial_number())
         builder = builder.not_valid_before(datetime.datetime.now(datetime.timezone.utc))
@@ -148,7 +148,6 @@ class CertificateAuthority:
             datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=days)
         )
 
-        # Add extensions equivalent to [ v3_ca_cert ]
         builder = builder.add_extension(
             x509.BasicConstraints(ca=True, path_length=None), critical=True
         )
@@ -174,13 +173,21 @@ class CertificateAuthority:
 
         certificate = builder.sign(
             private_key=issuer_key,
-            algorithm=hashes.SHA512(),  # matching default_md
+            algorithm=hashes.SHA512(),
         )
 
         self._ca_cert = certificate.public_bytes(serialization.Encoding.PEM)
 
     def __repr__(self) -> str:
+        """
+        Return the canonical string representation. (rw)
+
+        :returns: String containing the class name and the subject DN.
+        """
         return f"{self.__class__.__name__}(subject={self._subject!r})"
+
+
+# !CLASS - CertificateAuthority
 
 
 if __name__ == "__main__":  # pragma: no cover
