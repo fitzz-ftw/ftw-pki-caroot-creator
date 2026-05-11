@@ -45,7 +45,7 @@ license = "LGPL-2.1-or-later"
 # Repository = "https://github.com/fitzz-ftw/ftw-patch.git"
 
 [project.scripts]
-# ftwpkipassword = "ftwpki.baselibs.passwd:prog_password_enc"
+ftwpkicaroot = "ftwpki.root_ca.programms:prog_ca_root_cert"
 
 [project.optional-dependencies]
 doc = [

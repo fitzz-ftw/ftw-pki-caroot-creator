@@ -42,3 +42,14 @@ Namespace(countryName='',
     public_key='', 
     privatdir='')
 
+
+
+>>> from ftwpki.ca_root.cli_parser import get_ca_init_parser
+
+>>> get_ca_init_parser() #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+CaInitParser(prog='ftwpkicaroot', 
+    usage=None, 
+    description='Initialize a Root-CA with specified parameters.', 
+    formatter_class=<class 'argparse.HelpFormatter'>, 
+    conflict_handler='error', 
+    add_help=True)

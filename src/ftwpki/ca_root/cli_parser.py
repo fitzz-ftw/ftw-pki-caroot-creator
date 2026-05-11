@@ -86,6 +86,21 @@ class CaInitParser(DistinguishedNameParser):
 
 # !CLASS - CaInitParser
 
+# FUNCTION - get_ca_init_parser
+def get_ca_init_parser() -> CaInitParser:
+    """
+    Factory function to create and return a configured CaInitParser instance. (ro)
+
+    :returns: An instance of CaInitParser ready for argument parsing.
+    """
+    parser = CaInitParser(
+        prog="ftwpkicaroot",
+        description="Initialize a Root-CA with specified parameters.",
+        epilog="Example usage: ftwpkicaroot --help for more information.",
+    )
+    return parser   
+# !FUNCTION - get_parser
+
 
 if __name__ == "__main__": # pragma: no cover
     from doctest import FAIL_FAST, testfile
