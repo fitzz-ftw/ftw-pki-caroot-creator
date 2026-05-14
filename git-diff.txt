@@ -1,0 +1,903 @@
+diff --git a/README.md b/README.md
+index bc09b33..dd479db 100644
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,4 @@
+-# ftw-pki-caroot
++# ftw-pki-caroot-creator
+ 
+ [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+ [![License: LGPL v2.1](https://img.shields.io/badge/License-LGPL_v2.1-blue.svg)](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
+diff --git a/doc/source/conf.py b/doc/source/conf.py
+index 415d519..6e857d9 100644
+--- a/doc/source/conf.py
++++ b/doc/source/conf.py
+@@ -22,7 +22,7 @@ if not html_baseurl:
+ 
+ 
+ try:
+-    from ftwpki.ca_root._version import __version__
++    from ftwpki.ca_root_creator._version import __version__
+     version = __version__
+     release = __version__
+ except ImportError:
+@@ -214,7 +214,7 @@ def setup(app):
+ 
+ 
+ # -- Project information -----------------------------------------------------
+-project = "FTW PKI CA Root Tools"
++project = "FTW PKI CA Root Creator"
+ copyright = "2026, Fitzz TeΧnik Welt"
+ author = "Fitzz TeΧnik Welt"
+ html_show_copyright = True
+@@ -285,7 +285,6 @@ toc_object_entries_show_parents = "hide"
+ # -- Options for Intersphinx
+ intersphinx_mapping = {
+     "python": (f"https://docs.python.org/{sys.version_info.major}.{sys.version_info.minor}", None),
+-    "platformdirs": ("https://platformdirs.readthedocs.io/en/latest/", None),
+ }
+ 
+ #SECTION - Options for ePub output -------------------------------------------------
+@@ -443,7 +442,7 @@ autosummary_context.update(class_extention_context)
+ coverage_statistics_to_stdout = True
+ coverage_show_missing_items = True
+ coverage_modules = [
+-    "ftwpki.ca_root"
++    "ftwpki.ca_root_creator"
+ ]
+ 
+ # NOTE - This list uses REGULAR EXPRESSIONS, not shell-style globs.
+diff --git a/doc/source/devel/ftwpki_ca_root_module.rst b/doc/source/devel/ftwpki_ca_root_module.rst
+deleted file mode 100644
+index 9d994d5..0000000
+--- a/doc/source/devel/ftwpki_ca_root_module.rst
++++ /dev/null
+@@ -1,17 +0,0 @@
+-FTW PKI CA Root Tools
+-###################################
+-
+-.. automodule:: ftwpki.ca_root
+-
+-.. autosummary::
+-    :toctree: api
+-    :recursive:
+-    :template: module_extended.rst
+-
+-    caroot
+-    cli_parser
+-    protocols
+-    programms
+-
+-
+-
+diff --git a/doc/source/devel/get_started_caroot.rst b/doc/source/devel/get_started_caroot.rst
+index f72b250..281de85 100644
+--- a/doc/source/devel/get_started_caroot.rst
++++ b/doc/source/devel/get_started_caroot.rst
+@@ -26,7 +26,7 @@ sicher auf die Festplatte geschrieben.
+ 
+ >>> import os
+ >>> from pathlib import Path
+->>> from ftwpki.ca_root.caroot import CertificateAuthority
++>>> from ftwpki.ca_root_creator.caroot import CertificateAuthority
+ >>> from ftwpki.baselibs.core import save_pem
+ 
+ Verzeichnis für die PKI-Artefakte vorbereiten
+diff --git a/doc/source/devel/get_started_cli_parser.rst b/doc/source/devel/get_started_cli_parser.rst
+index f79607c..dd2dc1e 100644
+--- a/doc/source/devel/get_started_cli_parser.rst
++++ b/doc/source/devel/get_started_cli_parser.rst
+@@ -1,7 +1,7 @@
+ Comand Line Parser
+ ###################
+ 
+->>> from ftwpki.ca_root.cli_parser import CaInitParser
++>>> from ftwpki.ca_root_creator.cli_parser import CaInitParser
+ 
+ >>> cip = CaInitParser()
+ >>> cip #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+@@ -44,7 +44,7 @@ Namespace(countryName='',
+ 
+ 
+ 
+->>> from ftwpki.ca_root.cli_parser import get_ca_init_parser
++>>> from ftwpki.ca_root_creator.cli_parser import get_ca_init_parser
+ 
+ >>> get_ca_init_parser() #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+ CaInitParser(prog='ftwpkicaroot', 
+diff --git a/doc/source/devel/get_started_programms.rst b/doc/source/devel/get_started_programms.rst
+index 3c74890..81693b0 100644
+--- a/doc/source/devel/get_started_programms.rst
++++ b/doc/source/devel/get_started_programms.rst
+@@ -47,7 +47,7 @@ The Certificat Authority Root Creation
+ .. SECTION - Configuration
+ 
+ >>> from ftwpki.baselibs.toml_utils import toml2dn
+->>> from ftwpki.ca_root.cli_parser import CaInitParser
++>>> from ftwpki.ca_root_creator.cli_parser import CaInitParser
+ 
+ >>> ca_parser = CaInitParser(prog="ftwpkicaroot")
+ >>> ca_parser.set_defaults(**toml2dn(sys_argv))
+@@ -81,9 +81,9 @@ Namespace(countryName='DE',
+ >>> pwd_man
+ PasswordManager(private_dir='privat')
+ 
+->>> from ftwpki.ca_root.caroot import CertificateAuthority
++>>> from ftwpki.ca_root_creator.caroot import CertificateAuthority
+ 
+->>> ca_root = CertificateAuthority(
++>>> ca_root_creator = CertificateAuthority(
+ ...     common_name = args.commonName,
+ ...     country = args.countryName,
+ ...     state = args.stateOrProvinceName,
+@@ -92,25 +92,25 @@ PasswordManager(private_dir='privat')
+ ...     organizational_unit = args.organizationalUnitName    
+ ... )
+ 
+->>> ca_root.generate_key_pair(passphrase=pwd_man.decrypt_password_file(
++>>> ca_root_creator.generate_key_pair(passphrase=pwd_man.decrypt_password_file(
+ ...         encrypted_filename= args.passphrasefile,
+ ...         password = getpasswd("Enter Passphrase:")
+ ... ))
+ Enter Passphrase:
+ 
+ >>> from ftwpki.baselibs.core import save_pem
+->>> save_pem(ca_root.private_key, 
++>>> save_pem(ca_root_creator.private_key, 
+ ...     Path(f"{args.privatdir}/{args.private_key}"), 
+ ...     is_private=True)
+->>> save_pem(ca_root.public_key, Path(f"{args.public_key}"), is_private=False)
++>>> save_pem(ca_root_creator.public_key, Path(f"{args.public_key}"), is_private=False)
+ 
+->>> ca_root.create_root_certificate(passphrase= pwd_man.decrypt_password_file(
++>>> ca_root_creator.create_root_certificate(passphrase= pwd_man.decrypt_password_file(
+ ...         encrypted_filename= args.passphrasefile,
+ ...         password = getpasswd("Enter Passphrase:")
+ ... ), days = 20*370)
+ Enter Passphrase:
+ 
+->>> save_pem(ca_root.certificate, Path(f"{args.certificate}"), is_private=False)
++>>> save_pem(ca_root_creator.certificate, Path(f"{args.certificate}"), is_private=False)
+ 
+ 
+ ..!SECTION - Passwordhandling
+diff --git a/doc/source/devel/get_started_protocols.rst b/doc/source/devel/get_started_protocols.rst
+index efdea6b..1e9241b 100644
+--- a/doc/source/devel/get_started_protocols.rst
++++ b/doc/source/devel/get_started_protocols.rst
+@@ -3,6 +3,6 @@ Protocols
+ 
+ >>> from typing import Protocol
+ 
+->>> from ftwpki.ca_root.protocols import CaInitProtocol
++>>> from ftwpki.ca_root_creator.protocols import CaInitProtocol
+ 
+->>> from ftwpki.ca_root.protocols import CaSignProtocol
++>>> from ftwpki.ca_root_creator.protocols import CaSignProtocol
+diff --git a/doc/source/index.rst b/doc/source/index.rst
+index c951897..3b7d731 100644
+--- a/doc/source/index.rst
++++ b/doc/source/index.rst
+@@ -23,7 +23,7 @@ Documentation
+    :caption: Developer Guides:
+    
+    index_get_started
+-   devel/ftwpki_ca_root_module
++   devel/ftwpki_ca_root_creator_module
+ 
+ .. toctree::
+    :maxdepth: 1
+diff --git a/doc/source/user/cli_caroot.rst b/doc/source/user/cli_caroot.rst
+index db14f7a..999fb6d 100644
+--- a/doc/source/user/cli_caroot.rst
++++ b/doc/source/user/cli_caroot.rst
+@@ -2,6 +2,6 @@ Root-CA Command-Line Interface
+ ============================================
+ 
+ .. argparse::
+-   :module: ftwpki.ca_root.cli_parser 
++   :module: ftwpki.ca_root_creator.cli_parser 
+    :func: get_ca_init_parser
+    :prog: ftwpkicaroot
+diff --git a/pyproject.toml b/pyproject.toml
+index 9f3db05..567e0f8 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -13,7 +13,7 @@ where = ["src"]
+ 
+ [tool.setuptools_scm]
+ tag_regex = '^(?P<prefix>v)?(?P<version>[^\+|-]+)(?P<suffix>-test)?$'
+-write_to = "src/ftwpki/ca_root/_version.py"
++write_to = "src/ftwpki/ca_root_creator/_version.py"
+ 
+ [project]
+ classifiers = [
+@@ -30,19 +30,21 @@ classifiers = [
+   "Programming Language :: Python :: 3.15",
+   "Operating System :: OS Independent",
+ ]
+-dependencies = ["platformdirs","ftw-pki-libs"]
++dependencies = ["ftw-pki-libs"]
+ description = ""
+ dynamic = ["version"]
+-name = "ftw-pki-caroot"
++name = "ftw-pki-caroot-creator"
+ readme = "README.md"
+ requires-python = ">=3.11"
+ license = "LGPL-2.1-or-later"
+ 
+ [project.urls]
+ # Documentation = "https://ftw-patch.readthedocs.io/en/stable/"
+-# Homepage = "https://github.com/fitzz-ftw/ftw-patch"
+-# Issues = "https://github.com/fitzz-ftw/ftw-patch/issues"
+-# Repository = "https://github.com/fitzz-ftw/ftw-patch.git"
++Documentation = "https://github.com/fitzz-ftw/ftw-pki-caroot-creator/blob/main/README.md"
++Homepage = "https://github.com/fitzz-ftw/ftw-pki-caroot-creator"
++Issues = "https://github.com/fitzz-ftw/ftw-pki-caroot-creator/issues"
++Repository = "https://github.com/fitzz-ftw/ftw-pki-caroot-creator.git"
++Changelog = "https://github.com/fitzz-ftw/ftw-pki-caroot-creator/blob/main/CHANGELOG.md"
+ 
+ [project.scripts]
+ ftwpkicaroot = "ftwpki.root_ca.programms:prog_ca_root_cert"
+@@ -60,7 +62,7 @@ doc = [
+   "sphinxcontrib-mermaid",
+ ]
+ 
+-dev = ["ftw-pki-caroot[test,doc,lint]", "esbonio==0.16.5"]
++dev = ["ftw-pki-caroot-creator[test,doc,lint]", "esbonio==0.16.5"]
+ lint = ["ruff"]
+ test = ["pytest", "pytest-mock", "pytest-cov", "ftw-devtools"]
+ 
+@@ -79,6 +81,7 @@ egg_base = "."
+ exclude = ["pyproject.toml"]
+ line-length = 100
+ src = ["src"]
++target-version = "py311"
+ 
+ [tool.ruff.lint]
+ # E/W = Pycodestyle (Standard-Fehler/Warnungen)
+@@ -113,7 +116,7 @@ branch = true
+ omit = ["**/_version.py",
+ ]
+ 
+-source = ["ftwpki.ca_root"]
++source = ["ftwpki.ca_root_creator"]
+ 
+ [tool.coverage.report]
+ exclude_also = ["if *__name__ *=*[\"']__main__.*"]
+diff --git a/src/ftwpki/ca_root/__init__.py b/src/ftwpki/ca_root/__init__.py
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/src/ftwpki/ca_root/caroot.py b/src/ftwpki/ca_root/caroot.py
+deleted file mode 100644
+index 2a94360..0000000
+--- a/src/ftwpki/ca_root/caroot.py
++++ /dev/null
+@@ -1,222 +0,0 @@
+-# File: src/ftwpki/baselibs/caroot.py
+-# Author: Fitzz TeXnik Welt
+-# Email: FitzzTeXnikWelt@t-online.de
+-# License: GPLv2
+-"""
+-caroot
+-===============================
+-
+-Core logic for Root Certificate Authority management, including RSA key pair
+-generation and self-signed X.509 certificate creation. (rw)
+-"""
+-
+-import datetime
+-from pathlib import Path
+-from typing import cast
+-
+-from cryptography import x509
+-from cryptography.hazmat.primitives import hashes, serialization
+-from cryptography.hazmat.primitives.asymmetric.types import (
+-    CertificateIssuerPrivateKeyTypes,
+-    CertificatePublicKeyTypes,
+-    PrivateKeyTypes,
+-)
+-
+-from ftwpki.baselibs.core import create_distinguished_name, generate_rsa_key_pair
+-
+-
+-# CLASS - CertificateAuthority
+-class CertificateAuthority:
+-    """
+-    Handler for the creation of Root CAs and certificate management. (rw)
+-
+-    This class manages the CA's identity (Subject), private key generation,
+-    and the issuance of the self-signed root certificate.
+-    """
+-
+-    def __init__(
+-        self,
+-        common_name: str,
+-        country: str,
+-        state: str,
+-        location: str,
+-        organization: str,
+-        organizational_unit: str = ".",
+-    ) -> None:
+-        """
+-        Initialize CA metadata based on Distinguished Name components. (rw)
+-
+-        A dot ('.') in organizational_unit prevents the field from being created
+-        in the final X.509 subject.
+-
+-        :param common_name: The primary name of the CA (e.g., 'Root CA').
+-        :param country: Two-letter ISO country code.
+-        :param state: State or province name.
+-        :param location: Locality or city name.
+-        :param organization: Legal name of the organization.
+-        :param organizational_unit: Department or unit name (use '.' to omit).
+-        """
+-        self._subject = create_distinguished_name(
+-            common_name=common_name,
+-            country=country,
+-            state=state,
+-            location=location,
+-            organization=organization,
+-            organizational_unit=organizational_unit,
+-        )
+-        self._private_key: bytes = b""
+-        self._ca_cert: bytes = b""
+-        self._public_key: bytes = b""
+-
+-    @property
+-    def private_key(self) -> bytes:
+-        """
+-        The PEM encoded private key of the Root CA. (ro)
+-
+-        **Security Note:** This data is highly sensitive and must be
+-        stored securely.
+-
+-        :returns: The private key as PEM encoded bytes.
+-        """
+-        return self._private_key
+-
+-    @property
+-    def public_key(self) -> bytes:
+-        """
+-        The PEM encoded public key of the Root CA. (ro)
+-
+-        Extracted as SubjectPublicKeyInfo for verification purposes.
+-
+-        :returns: The public key as PEM encoded bytes.
+-        """
+-        return self._public_key
+-
+-    @property
+-    def certificate(self) -> bytes:
+-        """
+-        The self-signed Root CA certificate. (ro)
+-
+-        This certificate serves as the trust anchor for the PKI.
+-
+-        :returns: The X.509 certificate as PEM encoded bytes.
+-        """
+-        return self._ca_cert
+-
+-    def generate_key_pair(self, passphrase: str) -> None:
+-        """
+-        Generate a 4096-bit RSA key pair protected by a passphrase. (rw)
+-
+-        Uses AES-256-CBC encryption and PBKDF2-HMAC-SHA256 derivation
+-        for the resulting PEM structure.
+-
+-        :param passphrase: The strong passphrase for private key encryption.
+-        :raises ValueError: If the passphrase is empty or '.'.
+-        """
+-        if not passphrase or passphrase == ".":
+-            raise ValueError("Root CA private key MUST be protected by a strong passphrase.")
+-
+-        private_pem, public_pem = generate_rsa_key_pair(passphrase)
+-
+-        self._private_key = private_pem
+-        self._public_key = public_pem
+-
+-    def create_root_certificate(self, passphrase: str, days: int = 7300) -> None:
+-        """
+-        Create a self-signed Root CA certificate with v3 extensions. (rw)
+-
+-        Automatically generates a key pair if none exists. Sets BasicConstraints
+-        (CA:True) and KeyUsage (keyCertSign, cRLSign) as critical.
+-
+-        :param passphrase: Password required to load the internal private key.
+-        :param days: Validity period in days (default: 7300 / 20 years).
+-        """
+-        if not self._private_key:
+-            self.generate_key_pair(passphrase=passphrase)
+-
+-        private_key: PrivateKeyTypes = serialization.load_pem_private_key(
+-            self._private_key, password=passphrase.encode()
+-        )
+-        public_key = cast(CertificatePublicKeyTypes, private_key.public_key())
+-
+-        builder = x509.CertificateBuilder()
+-        builder = builder.subject_name(self._subject)
+-        builder = builder.issuer_name(self._subject)
+-        builder = builder.public_key(public_key)
+-        builder = builder.serial_number(x509.random_serial_number())
+-        builder = builder.not_valid_before(datetime.datetime.now(datetime.timezone.utc))
+-        builder = builder.not_valid_after(
+-            datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=days)
+-        )
+-
+-        builder = builder.add_extension(
+-            x509.BasicConstraints(ca=True, path_length=None), critical=True
+-        )
+-        builder = builder.add_extension(
+-            x509.KeyUsage(
+-                digital_signature=False,
+-                content_commitment=False,
+-                key_encipherment=False,
+-                data_encipherment=False,
+-                key_agreement=False,
+-                key_cert_sign=True,
+-                crl_sign=True,
+-                encipher_only=False,
+-                decipher_only=False,
+-            ),
+-            critical=True,
+-        )
+-        builder = builder.add_extension(
+-            x509.SubjectKeyIdentifier.from_public_key(public_key), critical=False
+-        )
+-
+-        issuer_key = cast(CertificateIssuerPrivateKeyTypes, private_key)
+-
+-        certificate = builder.sign(
+-            private_key=issuer_key,
+-            algorithm=hashes.SHA512(),
+-        )
+-
+-        self._ca_cert = certificate.public_bytes(serialization.Encoding.PEM)
+-
+-    def __repr__(self) -> str:
+-        """
+-        Return the canonical string representation. (rw)
+-
+-        :returns: String containing the class name and the subject DN.
+-        """
+-        return f"{self.__class__.__name__}(subject={self._subject!r})"
+-
+-
+-# !CLASS - CertificateAuthority
+-
+-
+-if __name__ == "__main__":  # pragma: no cover
+-    from doctest import FAIL_FAST, testfile
+-
+-    be_verbose = False
+-    be_verbose = True
+-    option_flags = 0
+-    option_flags = FAIL_FAST
+-    test_sum = 0
+-    test_failed = 0
+-
+-    # Pfad zu den dokumentierenden Tests
+-    testfiles_dir = Path(__file__).parents[3] / "doc/source/devel"
+-    test_file = testfiles_dir / "get_started_caroot.rst"
+-
+-    if test_file.exists():
+-        print(f"--- Running Doctest for {test_file.name} ---")
+-        doctestresult = testfile(
+-            str(test_file),
+-            module_relative=False,
+-            verbose=be_verbose,
+-            optionflags=option_flags,
+-        )
+-        test_failed += doctestresult.failed
+-        test_sum += doctestresult.attempted
+-        if test_failed == 0:
+-            print(f"\nDocTests passed without errors, {test_sum} tests.")
+-        else:
+-            print(f"\nDocTests failed: {test_failed} tests.")
+-    else:
+-        print(f"⚠️ Warning: Test file {test_file.name} not found.")
+diff --git a/src/ftwpki/ca_root/cli_parser.py b/src/ftwpki/ca_root/cli_parser.py
+deleted file mode 100644
+index c640124..0000000
+--- a/src/ftwpki/ca_root/cli_parser.py
++++ /dev/null
+@@ -1,134 +0,0 @@
+-# File: src/ftwpki/ca_root/cli_parser.py
+-# Author: Fitzz TeXnik Welt
+-# Email: FitzzTeXnikWelt@t-online.de
+-# License: LGPLv2
+-"""
+-cli_parser
+-===============================
+-
+-Command-line interface parser for Root-CA initialization, handling
+-Distinguished Name data and file path configuration. (rw)
+-"""
+-
+-from argparse import Namespace
+-from pathlib import Path
+-from typing import cast
+-
+-from ftwpki.baselibs.cli_parser import (
+-    DistinguishedNameParser,
+-)
+-from ftwpki.ca_root.protocols import CaInitProtocol
+-
+-
+-# CLASS - CaInitParser
+-class CaInitParser(DistinguishedNameParser):
+-    """
+-    Parser for Root-CA initialization arguments. (rw)
+-
+-    Extends the DistinguishedNameParser to include specific arguments for
+-    passphrase secrets, key storage, and certificate filenames.
+-    """
+-
+-    def _setup_parser(self) -> None:
+-        """
+-        Configure the argument parser with Root-CA specific options. (ro)
+-
+-        Sets up arguments for the passphrase file, private/public keys,
+-        certificates, and the private storage directory.
+-        """
+-        super()._setup_parser()
+-        self.add_argument(
+-            "passphrasefile", help="Filename of the encrypted secret containing the CA passphrase."
+-        )
+-        self.add_argument(
+-            "-k",
+-            "--key",
+-            "--private-key",
+-            dest="private_key",
+-            default="",
+-            help="Optional specific filename for the generated private key.",
+-        )
+-        self.add_argument(
+-            "-c",
+-            "--cert",
+-            "--certificate",
+-            dest="certificate",
+-            default="",
+-            help="Optional specific filename for the root certificate.",
+-        )
+-        self.add_argument(
+-            "-p",
+-            "--pub",
+-            "--public-key",
+-            dest="public_key",
+-            default="",
+-            help="Optional specific filename for the public key.",
+-        )
+-        self.add_argument(
+-            "--privatdir",
+-            dest="privatdir",
+-            default="",
+-            help="Directory path for private key storage (overrides default).",
+-        )
+-
+-    def parse_args(
+-        self, args: list[str] | None = None, namespace: Namespace | None = None
+-    ) -> CaInitProtocol:
+-        """
+-        Parse command-line arguments and cast to CaInitProtocol. (ro)
+-
+-        :param args: List of command-line argument strings.
+-        :param namespace: Existing Namespace object to populate.
+-        :returns: Arguments adhering to the CaInitProtocol interface.
+-        """
+-        return cast(CaInitProtocol, super().parse_args(args, namespace))
+-
+-
+-# !CLASS - CaInitParser
+-
+-# FUNCTION - get_ca_init_parser
+-def get_ca_init_parser() -> CaInitParser:
+-    """
+-    Factory function to create and return a configured CaInitParser instance. (ro)
+-
+-    :returns: An instance of CaInitParser ready for argument parsing.
+-    """
+-    parser = CaInitParser(
+-        prog="ftwpkicaroot",
+-        description="Initialize a Root-CA with specified parameters.",
+-        epilog="Example usage: ftwpkicaroot --help for more information.",
+-    )
+-    return parser   
+-# !FUNCTION - get_parser
+-
+-
+-if __name__ == "__main__": # pragma: no cover
+-    from doctest import FAIL_FAST, testfile
+-    
+-    be_verbose = False
+-    be_verbose = True
+-    option_flags = 0
+-    option_flags = FAIL_FAST
+-    test_sum = 0
+-    test_failed = 0
+-    
+-    # Pfad zu den dokumentierenden Tests
+-    testfiles_dir = Path(__file__).parents[3] / "doc/source/devel"
+-    test_file = testfiles_dir / "get_started_cli_parser.rst"
+-    
+-    if test_file.exists():
+-        print(f"--- Running Doctest for {test_file.name} ---")
+-        doctestresult = testfile(
+-            str(test_file),
+-            module_relative=False,
+-            verbose=be_verbose,
+-            optionflags=option_flags,
+-        )
+-        test_failed += doctestresult.failed
+-        test_sum += doctestresult.attempted
+-        if test_failed == 0:
+-            print(f"\nDocTests passed without errors, {test_sum} tests.")
+-        else:
+-            print(f"\nDocTests failed: {test_failed} tests.")
+-    else:
+-        print(f"⚠️ Warning: Test file {test_file.name} not found.")
+diff --git a/src/ftwpki/ca_root/programms.py b/src/ftwpki/ca_root/programms.py
+deleted file mode 100644
+index d5ae76c..0000000
+--- a/src/ftwpki/ca_root/programms.py
++++ /dev/null
+@@ -1,100 +0,0 @@
+-# File: src/ftwpki/ca_root/programms.py
+-# Author: Fitzz TeXnik Welt
+-# Email: FitzzTeXnikWelt@t-online.de
+-# License: LGPLv2 or above
+-"""
+-programms
+-===============================
+-
+-Main entry points for Root-CA initialization and certificate signing. (rw)
+-"""
+-
+-import getpass
+-from pathlib import Path
+-
+-from ftwpki.baselibs.core import (
+-    save_pem,
+-)
+-from ftwpki.baselibs.passwd import PasswordManager
+-from ftwpki.baselibs.toml_utils import toml2dn
+-from ftwpki.ca_root.caroot import CertificateAuthority
+-from ftwpki.ca_root.cli_parser import CaInitParser
+-
+-
+-def prog_ca_root_cert(argv: list[str] | None = None) -> int:
+-    """
+-    Entry point for initializing a new Root-CA. (rw)
+-
+-    Processes CLI arguments, generates the RSA key pair, and creates the
+-    self-signed root certificate.
+-
+-    :param argv: Optional list of command-line arguments.
+-    :returns: Exit code (0 for success, 1 for error).
+-    """
+-    try:
+-        ca_parser = CaInitParser()
+-        ca_parser.set_defaults(**toml2dn(argv))
+-        args = ca_parser.parse_args(argv)
+-        pwd_man = PasswordManager(private_dir=args.privatdir)
+-        ca_root = CertificateAuthority(
+-            common_name=args.commonName,
+-            country=args.countryName,
+-            state=args.stateOrProvinceName,
+-            location=args.localityName,
+-            organization=args.organizationName,
+-            organizational_unit=args.organizationalUnitName,
+-        )
+-        ca_root.generate_key_pair(
+-            passphrase=pwd_man.decrypt_password_file(
+-                encrypted_filename=args.passphrasefile,
+-                password=getpass.getpass("Enter Passphrase:"),
+-            )
+-        )
+-        save_pem(ca_root.private_key, Path(f"{args.privatdir}/{args.private_key}"), is_private=True)
+-        save_pem(ca_root.public_key, Path(f"{args.public_key}"), is_private=False)
+-        ca_root.create_root_certificate(
+-            passphrase=pwd_man.decrypt_password_file(
+-                encrypted_filename=args.passphrasefile,
+-                password=getpass.getpass("Enter Passphrase:"),
+-            ),
+-            days=20 * 370,
+-        )
+-        save_pem(ca_root.certificate, Path(f"{args.certificate}"), is_private=False)
+-        return 0
+-    except Exception as e:
+-        print(e)
+-        return 1
+-
+-
+-
+-if __name__ == "__main__":  # pragma: no cover
+-    from doctest import FAIL_FAST, testfile
+-
+-    be_verbose = False
+-    be_verbose = True
+-    option_flags = 0
+-    option_flags = FAIL_FAST
+-    test_sum = 0
+-    test_failed = 0
+-
+-    # Pfad zu den dokumentierenden Tests
+-    testfiles_dir = Path(__file__).parents[3] / "doc/source/devel"
+-    test_file = testfiles_dir / "get_started_programms.rst"
+-    # test_file = testfiles_dir / "get_started_programms.rst"
+-
+-    if test_file.exists():
+-        print(f"--- Running Doctest for {test_file.name} ---")
+-        doctestresult = testfile(
+-            str(test_file),
+-            module_relative=False,
+-            verbose=be_verbose,
+-            optionflags=option_flags,
+-        )
+-        test_failed += doctestresult.failed
+-        test_sum += doctestresult.attempted
+-        if test_failed == 0:
+-            print(f"\nDocTests passed without errors, {test_sum} tests.")
+-        else:
+-            print(f"\nDocTests failed: {test_failed} tests.")
+-    else:
+-        print(f"⚠️ Warning: Test file {test_file.name} not found.")
+diff --git a/src/ftwpki/ca_root/protocols.py b/src/ftwpki/ca_root/protocols.py
+deleted file mode 100644
+index b48d3e0..0000000
+--- a/src/ftwpki/ca_root/protocols.py
++++ /dev/null
+@@ -1,88 +0,0 @@
+-# File: src/ftwpki/ca_root/protocols.py
+-# Author: Fitzz TeXnik Welt
+-# Email: FitzzTeXnikWelt@t-online.de
+-# License: LGPLv2 or above
+-"""
+-protocols
+-===============================
+-
+-Structural interfaces for the Root-CA management package. (ro)
+-"""
+-
+-from pathlib import Path
+-
+-from ftwpki.baselibs.protocols import DistinguishedNameProtocol
+-
+-
+-# CLASS - CaInitProtocol
+-class CaInitProtocol(DistinguishedNameProtocol):
+-    """
+-    Structural interface for Root-CA initialization data. (ro)
+-
+-    Extends DistinguishedNameProtocol to include all necessary file paths
+-    for creating a new Root Certificate Authority.
+-    """
+-
+-    public_key: str
+-    """Filename for the generated public key/certificate."""
+-    private_key: str
+-    """Filename for the generated encrypted private key."""
+-    privatdir: str
+-    """Path to the directory where private keys are stored."""
+-    passphrasefile: str
+-    """Filename of the encrypted passphrase secret."""
+-    certificate: str
+-    """Filename for the self-signed root certificate."""
+-
+-
+-# !CLASS - CaInitProtocol
+-
+-
+-# CLASS - CaSignProtocol
+-class CaSignProtocol(DistinguishedNameProtocol):
+-    """
+-    Structural interface for Root-CA signing operations. (ro)
+-
+-    Defines the required attributes to access the Root-CA's private
+-    infrastructure for signing requests.
+-    """
+-
+-    private_key: str
+-    """Filename of the Root-CA private key to be used for signing."""
+-    privatdir: str
+-    """Path to the directory containing the private key."""
+-
+-
+-# !CLASS - CaSignProtocol
+-
+-
+-if __name__ == "__main__":  # pragma: no cover
+-    from doctest import FAIL_FAST, testfile
+-
+-    be_verbose = False
+-    be_verbose = True
+-    option_flags = 0
+-    option_flags = FAIL_FAST
+-    test_sum = 0
+-    test_failed = 0
+-
+-    # Pfad zu den dokumentierenden Tests
+-    testfiles_dir = Path(__file__).parents[3] / "doc/source/devel"
+-    test_file = testfiles_dir / "get_started_protocols.rst"
+-
+-    if test_file.exists():
+-        print(f"--- Running Doctest for {test_file.name} ---")
+-        doctestresult = testfile(
+-            str(test_file),
+-            module_relative=False,
+-            verbose=be_verbose,
+-            optionflags=option_flags,
+-        )
+-        test_failed += doctestresult.failed
+-        test_sum += doctestresult.attempted
+-        if test_failed == 0:
+-            print(f"\nDocTests passed without errors, {test_sum} tests.")
+-        else:
+-            print(f"\nDocTests failed: {test_failed} tests.")
+-    else:
+-        print(f"⚠️ Warning: Test file {test_file.name} not found.")
+diff --git a/tests/test_programms.py b/tests/test_programms.py
+index eb13abe..1cc7fd7 100644
+--- a/tests/test_programms.py
++++ b/tests/test_programms.py
+@@ -2,18 +2,18 @@
+ 
+ 
+ 
+-from ftwpki.ca_root.programms import prog_ca_root_cert
++from ftwpki.ca_root_creator.programms import prog_ca_root_creator_cert
+ 
+ 
+-def test_prog_ca_root_cert_full_coverage(mocker, tmp_path):
++def test_prog_ca_root_creator_cert_full_coverage(mocker, tmp_path):
+     # 1. getpass patchen (jetzt wo du 'import getpass' nutzt)
+-    # Falls du 'from getpass import getpass' nutzt: "ftwpki.ca_root.programms.getpass"
++    # Falls du 'from getpass import getpass' nutzt: "ftwpki.ca_root_creator.programms.getpass"
+     # Falls du 'import getpass' nutzt: "getpass.getpass"
+     mock_getpass = mocker.patch("getpass.getpass", return_value="strenggeheim")
+ 
+     # 2. Mocks für Infrastructure
+-    mocker.patch("ftwpki.ca_root.programms.save_pem")
+-    mock_pwd_man = mocker.patch("ftwpki.ca_root.programms.PasswordManager")
++    mocker.patch("ftwpki.ca_root_creator.programms.save_pem")
++    mock_pwd_man = mocker.patch("ftwpki.ca_root_creator.programms.PasswordManager")
+     mock_pwd_man.return_value.decrypt_password_file.return_value = "entschluesselt"
+ 
+     # 3. Valide Argumente (inklusive Country 'DE' für die Längen-Validierung)
+@@ -30,7 +30,7 @@ def test_prog_ca_root_cert_full_coverage(mocker, tmp_path):
+     ]
+ 
+     # Ausführung
+-    exit_code = prog_ca_root_cert(argv)
++    exit_code = prog_ca_root_creator_cert(argv)
+ 
+     # Falls es immer noch 1 ist, lassen wir uns den Fehler anzeigen
+     assert exit_code == 0
+@@ -38,11 +38,11 @@ def test_prog_ca_root_cert_full_coverage(mocker, tmp_path):
+ 
+ 
+ 
+-def test_prog_ca_root_cert_exception_handling(mocker):
++def test_prog_ca_root_creator_cert_exception_handling(mocker):
+     """Testet den try-except Block (Zeile 51-53) für 100% Coverage."""
+-    mocker.patch("ftwpki.ca_root.programms.CaInitParser", side_effect=RuntimeError("Boom"))
++    mocker.patch("ftwpki.ca_root_creator.programms.CaInitParser", side_effect=RuntimeError("Boom"))
+ 
+     # Das sollte die Exception fangen und 1 zurückgeben
+-    exit_code = prog_ca_root_cert([])
++    exit_code = prog_ca_root_creator_cert([])
+     assert exit_code == 1
+ 
+diff --git a/tox.ini b/tox.ini
+index 5fbb201..9cca4d5 100644
+--- a/tox.ini
++++ b/tox.ini
+@@ -17,7 +17,7 @@ extras =
+ package = wheel
+ wheel_build_env = .pkg
+ commands =
+-    pytest --cov=ftwpki.ca_root --cov-branch --cov-report=html:htmlcov/{envname} --cov-report=term-missing
++    pytest --cov=ftwpki.ca_root_creator --cov-branch --cov-report=html:htmlcov/{envname} --cov-report=term-missing
+ 
+ ; [testenv:py311]
+ ; commands =

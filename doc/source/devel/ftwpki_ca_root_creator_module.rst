@@ -1,7 +1,7 @@
 FTW PKI CA Root Tools
 ###################################
 
-.. automodule:: ftwpki.ca_root
+.. automodule:: ftwpki.ca_root_creator
 
 .. autosummary::
     :toctree: api

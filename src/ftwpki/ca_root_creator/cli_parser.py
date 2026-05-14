@@ -1,4 +1,4 @@
-# File: src/ftwpki/ca_root/cli_parser.py
+# File: src/ftwpki/ca_root_creator/cli_parser.py
 # Author: Fitzz TeXnik Welt
 # Email: FitzzTeXnikWelt@t-online.de
 # License: LGPLv2
@@ -17,7 +17,7 @@ from typing import cast
 from ftwpki.baselibs.cli_parser import (
     DistinguishedNameParser,
 )
-from ftwpki.ca_root.protocols import CaInitProtocol
+from ftwpki.ca_root_creator.protocols import CaInitProtocol
 
 
 # CLASS - CaInitParser

@@ -1,4 +1,4 @@
-# File: src/ftwpki/ca_root/programms.py
+# File: src/ftwpki/ca_root_creator/programms.py
 # Author: Fitzz TeXnik Welt
 # Email: FitzzTeXnikWelt@t-online.de
 # License: LGPLv2 or above
@@ -17,11 +17,11 @@ from ftwpki.baselibs.core import (
 )
 from ftwpki.baselibs.passwd import PasswordManager
 from ftwpki.baselibs.toml_utils import toml2dn
-from ftwpki.ca_root.caroot import CertificateAuthority
-from ftwpki.ca_root.cli_parser import CaInitParser
+from ftwpki.ca_root_creator.caroot import CertificateAuthority
+from ftwpki.ca_root_creator.cli_parser import CaInitParser
 
 
-def prog_ca_root_cert(argv: list[str] | None = None) -> int:
+def prog_ca_root_creator_cert(argv: list[str] | None = None) -> int:
     """
     Entry point for initializing a new Root-CA. (rw)
 
@@ -36,7 +36,7 @@ def prog_ca_root_cert(argv: list[str] | None = None) -> int:
         ca_parser.set_defaults(**toml2dn(argv))
         args = ca_parser.parse_args(argv)
         pwd_man = PasswordManager(private_dir=args.privatdir)
-        ca_root = CertificateAuthority(
+        ca_root_creator = CertificateAuthority(
             common_name=args.commonName,
             country=args.countryName,
             state=args.stateOrProvinceName,
@@ -44,22 +44,22 @@ def prog_ca_root_cert(argv: list[str] | None = None) -> int:
             organization=args.organizationName,
             organizational_unit=args.organizationalUnitName,
         )
-        ca_root.generate_key_pair(
+        ca_root_creator.generate_key_pair(
             passphrase=pwd_man.decrypt_password_file(
                 encrypted_filename=args.passphrasefile,
                 password=getpass.getpass("Enter Passphrase:"),
             )
         )
-        save_pem(ca_root.private_key, Path(f"{args.privatdir}/{args.private_key}"), is_private=True)
-        save_pem(ca_root.public_key, Path(f"{args.public_key}"), is_private=False)
-        ca_root.create_root_certificate(
+        save_pem(ca_root_creator.private_key, Path(f"{args.privatdir}/{args.private_key}"), is_private=True)
+        save_pem(ca_root_creator.public_key, Path(f"{args.public_key}"), is_private=False)
+        ca_root_creator.create_root_certificate(
             passphrase=pwd_man.decrypt_password_file(
                 encrypted_filename=args.passphrasefile,
                 password=getpass.getpass("Enter Passphrase:"),
             ),
             days=20 * 370,
         )
-        save_pem(ca_root.certificate, Path(f"{args.certificate}"), is_private=False)
+        save_pem(ca_root_creator.certificate, Path(f"{args.certificate}"), is_private=False)
         return 0
     except Exception as e:
         print(e)

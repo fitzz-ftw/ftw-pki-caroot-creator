@@ -26,7 +26,7 @@ sicher auf die Festplatte geschrieben.
 
 >>> import os
 >>> from pathlib import Path
->>> from ftwpki.ca_root.caroot import CertificateAuthority
+>>> from ftwpki.ca_root_creator.caroot import CertificateAuthority
 >>> from ftwpki.baselibs.core import save_pem
 
 Verzeichnis für die PKI-Artefakte vorbereiten

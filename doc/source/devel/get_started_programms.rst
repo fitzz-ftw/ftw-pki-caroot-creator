@@ -47,7 +47,7 @@ The Certificat Authority Root Creation
 .. SECTION - Configuration
 
 >>> from ftwpki.baselibs.toml_utils import toml2dn
->>> from ftwpki.ca_root.cli_parser import CaInitParser
+>>> from ftwpki.ca_root_creator.cli_parser import CaInitParser
 
 >>> ca_parser = CaInitParser(prog="ftwpkicaroot")
 >>> ca_parser.set_defaults(**toml2dn(sys_argv))
@@ -81,9 +81,9 @@ Namespace(countryName='DE',
 >>> pwd_man
 PasswordManager(private_dir='privat')
 
->>> from ftwpki.ca_root.caroot import CertificateAuthority
+>>> from ftwpki.ca_root_creator.caroot import CertificateAuthority
 
->>> ca_root = CertificateAuthority(
+>>> ca_root_creator = CertificateAuthority(
 ...     common_name = args.commonName,
 ...     country = args.countryName,
 ...     state = args.stateOrProvinceName,
@@ -92,25 +92,25 @@ PasswordManager(private_dir='privat')
 ...     organizational_unit = args.organizationalUnitName    
 ... )
 
->>> ca_root.generate_key_pair(passphrase=pwd_man.decrypt_password_file(
+>>> ca_root_creator.generate_key_pair(passphrase=pwd_man.decrypt_password_file(
 ...         encrypted_filename= args.passphrasefile,
 ...         password = getpasswd("Enter Passphrase:")
 ... ))
 Enter Passphrase:
 
 >>> from ftwpki.baselibs.core import save_pem
->>> save_pem(ca_root.private_key, 
+>>> save_pem(ca_root_creator.private_key, 
 ...     Path(f"{args.privatdir}/{args.private_key}"), 
 ...     is_private=True)
->>> save_pem(ca_root.public_key, Path(f"{args.public_key}"), is_private=False)
+>>> save_pem(ca_root_creator.public_key, Path(f"{args.public_key}"), is_private=False)
 
->>> ca_root.create_root_certificate(passphrase= pwd_man.decrypt_password_file(
+>>> ca_root_creator.create_root_certificate(passphrase= pwd_man.decrypt_password_file(
 ...         encrypted_filename= args.passphrasefile,
 ...         password = getpasswd("Enter Passphrase:")
 ... ), days = 20*370)
 Enter Passphrase:
 
->>> save_pem(ca_root.certificate, Path(f"{args.certificate}"), is_private=False)
+>>> save_pem(ca_root_creator.certificate, Path(f"{args.certificate}"), is_private=False)
 
 
 ..!SECTION - Passwordhandling

@@ -23,7 +23,7 @@ Documentation
    :caption: Developer Guides:
    
    index_get_started
-   devel/ftwpki_ca_root_module
+   devel/ftwpki_ca_root_creator_module
 
 .. toctree::
    :maxdepth: 1

@@ -1,7 +1,7 @@
 Comand Line Parser
 ###################
 
->>> from ftwpki.ca_root.cli_parser import CaInitParser
+>>> from ftwpki.ca_root_creator.cli_parser import CaInitParser
 
 >>> cip = CaInitParser()
 >>> cip #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
@@ -44,7 +44,7 @@ Namespace(countryName='',
 
 
 
->>> from ftwpki.ca_root.cli_parser import get_ca_init_parser
+>>> from ftwpki.ca_root_creator.cli_parser import get_ca_init_parser
 
 >>> get_ca_init_parser() #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
 CaInitParser(prog='ftwpkicaroot', 

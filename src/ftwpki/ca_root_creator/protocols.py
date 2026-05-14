@@ -1,4 +1,4 @@
-# File: src/ftwpki/ca_root/protocols.py
+# File: src/ftwpki/ca_root_creator/protocols.py
 # Author: Fitzz TeXnik Welt
 # Email: FitzzTeXnikWelt@t-online.de
 # License: LGPLv2 or above
