@@ -50,7 +50,8 @@ def prog_ca_root_creator_cert(argv: list[str] | None = None) -> int:
                 password=getpass.getpass("Enter Passphrase:"),
             )
         )
-        save_pem(ca_root_creator.private_key, Path(f"{args.privatdir}/{args.private_key}"), is_private=True)
+        save_pem(ca_root_creator.private_key, Path(f"{args.privatdir}/{args.private_key}"), 
+                 is_private=True)
         save_pem(ca_root_creator.public_key, Path(f"{args.public_key}"), is_private=False)
         ca_root_creator.create_root_certificate(
             passphrase=pwd_man.decrypt_password_file(

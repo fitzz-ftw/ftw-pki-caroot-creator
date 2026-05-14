@@ -31,7 +31,7 @@ classifiers = [
   "Operating System :: OS Independent",
 ]
 dependencies = ["ftw-pki-libs"]
-description = ""
+description = "A specialized tool for automated and deterministic Root CA creation within the FTW PKI ecosystem."
 dynamic = ["version"]
 name = "ftw-pki-caroot-creator"
 readme = "README.md"
@@ -47,7 +47,7 @@ Repository = "https://github.com/fitzz-ftw/ftw-pki-caroot-creator.git"
 Changelog = "https://github.com/fitzz-ftw/ftw-pki-caroot-creator/blob/main/CHANGELOG.md"
 
 [project.scripts]
-ftwpkicaroot = "ftwpki.root_ca.programms:prog_ca_root_cert"
+ftwpkicaroot = "ftwpki.ca_root_creator.programms:prog_ca_root_creator_cert"
 
 [project.optional-dependencies]
 doc = [
