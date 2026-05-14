@@ -13,7 +13,7 @@ where = ["src"]
 
 [tool.setuptools_scm]
 tag_regex = '^(?P<prefix>v)?(?P<version>[^\+|-]+)(?P<suffix>-test)?$'
-write_to = "src/ftwpki/ca_root/_version.py"
+write_to = "src/ftwpki/ca_root_creator/_version.py"
 
 [project]
 classifiers = [
@@ -30,22 +30,24 @@ classifiers = [
   "Programming Language :: Python :: 3.15",
   "Operating System :: OS Independent",
 ]
-dependencies = ["platformdirs","ftw-pki-libs"]
-description = ""
+dependencies = ["ftw-pki-libs"]
+description = "A specialized tool for automated and deterministic Root CA creation within the FTW PKI ecosystem."
 dynamic = ["version"]
-name = "ftw-pki-caroot"
+name = "ftw-pki-caroot-creator"
 readme = "README.md"
 requires-python = ">=3.11"
+license = "LGPL-2.1-or-later"
 
 [project.urls]
 # Documentation = "https://ftw-patch.readthedocs.io/en/stable/"
-# Homepage = "https://github.com/fitzz-ftw/ftw-patch"
-# Issues = "https://github.com/fitzz-ftw/ftw-patch/issues"
-# Repository = "https://github.com/fitzz-ftw/ftw-patch.git"
+Documentation = "https://github.com/fitzz-ftw/ftw-pki-caroot-creator/blob/main/README.md"
+Homepage = "https://github.com/fitzz-ftw/ftw-pki-caroot-creator"
+Issues = "https://github.com/fitzz-ftw/ftw-pki-caroot-creator/issues"
+Repository = "https://github.com/fitzz-ftw/ftw-pki-caroot-creator.git"
+Changelog = "https://github.com/fitzz-ftw/ftw-pki-caroot-creator/blob/main/CHANGELOG.md"
 
 [project.scripts]
-# ftw-terminal-color-check = "fitzzftw.patch.base:color_terminal_check"
-# ftwpatch = "fitzzftw.patch.ftw_patch:prog_ftw_patch"
+ftwpkicaroot = "ftwpki.ca_root_creator.programms:prog_ca_root_creator_cert"
 
 [project.optional-dependencies]
 doc = [
@@ -60,9 +62,9 @@ doc = [
   "sphinxcontrib-mermaid",
 ]
 
-dev = ["ftw-pki-caroot[test,doc,lint]", "esbonio==0.16.5"]
+dev = ["ftw-pki-caroot-creator[test,doc,lint]", "esbonio==0.16.5"]
 lint = ["ruff"]
-test = ["pytest", "pytest-mock", "pytest-cov"]
+test = ["pytest", "pytest-mock", "pytest-cov", "ftw-devtools"]
 
 [[project.authors]]
 email = "FitzzTeXnikWelt@t-online.de"
@@ -79,6 +81,7 @@ egg_base = "."
 exclude = ["pyproject.toml"]
 line-length = 100
 src = ["src"]
+target-version = "py311"
 
 [tool.ruff.lint]
 # E/W = Pycodestyle (Standard-Fehler/Warnungen)
@@ -113,7 +116,7 @@ branch = true
 omit = ["**/_version.py",
 ]
 
-source = ["ftwpki.ca_root"]
+source = ["ftwpki.ca_root_creator"]
 
 [tool.coverage.report]
 exclude_also = ["if *__name__ *=*[\"']__main__.*"]
@@ -124,3 +127,8 @@ show_missing = true
 [tool.coverage.html]
 # Das entspricht --cov-report=html:doc/build/coverage
 directory = "doc/build/test_coverage/caroot"
+
+[tool.esbonio.sphinx]
+buildCommand = ["sphinx-build", "-M", "dirhtml", "doc/source", "./_build"]
+pythonCommand = ["${venv:../.venv311/}"]
+

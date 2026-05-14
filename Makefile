@@ -1,5 +1,5 @@
 # --- Configuration ---
-DEPLOY_BRANCH = master
+DEPLOY_BRANCH = main
 TAG_FILE      = TAGMESSAGE.txt
 MERGE_file    = MERGEMESSAGE.txt
 OLD_MSG_DIR   = old_messages

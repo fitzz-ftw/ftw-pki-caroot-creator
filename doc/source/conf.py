@@ -22,7 +22,7 @@ if not html_baseurl:
 
 
 try:
-    from ftwpki.ca_root._version import __version__
+    from ftwpki.ca_root_creator._version import __version__
     version = __version__
     release = __version__
 except ImportError:
@@ -214,7 +214,7 @@ def setup(app):
 
 
 # -- Project information -----------------------------------------------------
-project = "FTW PKI CA Root Tools"
+project = "FTW PKI CA Root Creator"
 copyright = "2026, Fitzz TeΧnik Welt"
 author = "Fitzz TeΧnik Welt"
 html_show_copyright = True
@@ -285,7 +285,6 @@ toc_object_entries_show_parents = "hide"
 # -- Options for Intersphinx
 intersphinx_mapping = {
     "python": (f"https://docs.python.org/{sys.version_info.major}.{sys.version_info.minor}", None),
-    "platformdirs": ("https://platformdirs.readthedocs.io/en/latest/", None),
 }
 
 #SECTION - Options for ePub output -------------------------------------------------
@@ -443,7 +442,7 @@ autosummary_context.update(class_extention_context)
 coverage_statistics_to_stdout = True
 coverage_show_missing_items = True
 coverage_modules = [
-    "ftwpki.ca_root"
+    "ftwpki.ca_root_creator"
 ]
 
 # NOTE - This list uses REGULAR EXPRESSIONS, not shell-style globs.

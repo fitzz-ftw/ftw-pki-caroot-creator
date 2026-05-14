@@ -1,35 +1,10 @@
+.. ftw-pki documentation master file
 
-ftwpki-baselibs: Private Key Infrastructure Baselibraries
-==========================================================
+Welcome to the documentation!
+=============================
 
-.. only:: not epub
-
-..
-   .. image:: https://img.shields.io/pypi/v/ftw-patch.svg
-      :target: https://pypi.org/project/ftw-patch/
-      :alt: PyPI version
-
-   .. image:: https://readthedocs.org/projects/ftw-patch/badge/?version=latest
-      :target: https://ftw-patch.readthedocs.io/en/latest/?badge=latest
-      :alt: Documentation Status
-
-   .. image:: https://img.shields.io/badge/coverage-100%25-brightgreen
-      :target: https://codecov.io/gh/fitzz-ftw/ftw-patch
-      :alt: Code Coverage
-
-   .. image:: https://img.shields.io/badge/doc--coverage-100%25-brightgreen
-      :target: https://ftw-patch.readthedocs.io/
-      :alt: Doc Coverage
-
-   .. image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
-      :target: https://github.com/astral-sh/ruff
-      :alt: Linting: ruff
-
-   .. image:: https://img.shields.io/badge/License-LGPL%20v2.1-blue.svg
-      :target: https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-      :alt: License: GPL v2
-
----
+.. include:: ../../README.md
+   :parser: myst_parser.sphinx_
 
 
 
@@ -38,10 +13,17 @@ Documentation
 
 .. toctree::
    :maxdepth: 1
+   :caption: User Guides:
+
+   user/cli_caroot
+
+
+.. toctree::
+   :maxdepth: 1
    :caption: Developer Guides:
    
    index_get_started
-   devel/ftwpki_ca_root_module
+   devel/ftwpki_ca_root_creator_module
 
 .. toctree::
    :maxdepth: 1

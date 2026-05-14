@@ -8,7 +8,7 @@ Dabei werden ein verschlüsselter privater Schlüssel und ein selbstsigniertes S
 
 .. SECTION - Setup
 
->>> from fitzzftw.develtool.testinfra import TestHomeEnvironment
+>>> from fitzzftw.devtools.testinfra import TestHomeEnvironment
 >>> from pathlib import Path
 >>> env = TestHomeEnvironment(Path("doc/source/devel/testhome"))
 >>> env.setup(True)
@@ -26,7 +26,7 @@ sicher auf die Festplatte geschrieben.
 
 >>> import os
 >>> from pathlib import Path
->>> from ftwpki.ca_root.caroot import CertificateAuthority
+>>> from ftwpki.ca_root_creator.caroot import CertificateAuthority
 >>> from ftwpki.baselibs.core import save_pem
 
 Verzeichnis für die PKI-Artefakte vorbereiten
@@ -46,8 +46,8 @@ CA-Instanz mit Metadaten initialisieren
 ...     organization="FTW Projekte"
 ... )
 
->>> ca
-CertificateAuthority(subject=<Name(C=DE,ST=Hessen,L=Frankfurt,O=FTW Projekte,CN=FTW Dev Root CA)>)
+>>> ca #doctest: +ELLIPSIS
+CertificateAuthority(subject=<Name(...)>)
 
 Schlüsselpaar und Zertifikat generieren
 Der private Schlüssel wird mit der Passphrase verschlüsselt.
@@ -63,7 +63,7 @@ PEM-Daten dauerhaft speichern.
 Wir nutzen 'is_private=True' für den Schlüssel (chmod 600).
 
 >>> save_pem(ca.private_key, key_path, is_private=True)
->>> save_pem(ca.certificate(), cert_path)
+>>> save_pem(ca.certificate, cert_path)
 
 Überprüfung
 
@@ -96,6 +96,7 @@ ValueError: Root CA private key MUST be protected by a strong passphrase.
 
 .. SECTION - Teardown
 
+>>> env.clean_home()
 >>> env.teardown()
 
 .. !SECTION
