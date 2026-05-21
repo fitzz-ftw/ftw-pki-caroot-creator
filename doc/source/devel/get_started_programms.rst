@@ -23,21 +23,20 @@ The Certificat Authority Root Creation
 ...     print(prompt)
 ...     return "strenggeheim"
 
->>> cmd_line="--conf_file ca_root_conf.toml -ST Mystate --commonName 'Fitzz CA Root' "
->>> cmd_line += " -k ca.key.pem -p ca.pub.pem --cert ca.cert"
->>> cmd_line += " --privatdir privat"
+>>> cmd_line="--conf-file ca_root_conf.toml -ST Mystate --commonName 'Fitzz CA Root' "
+>>> cmd_line += " -k ca  --cert ca.cert"
+>>> cmd_line += " --private-dir privat"
 >>> cmd_line += " testpasswd"
 
 >>> import shlex
 >>> sys_argv= shlex.split(cmd_line) 
 >>> sys_argv #doctest: +NORMALIZE_WHITESPACE
-['--conf_file', 'ca_root_conf.toml', 
+['--conf-file', 'ca_root_conf.toml', 
  '-ST', 'Mystate', 
  '--commonName', 'Fitzz CA Root',
- '-k', 'ca.key.pem',
- '-p', 'ca.pub.pem', 
+ '-k', 'ca',
  '--cert', 'ca.cert',
- '--privatdir', 'privat',
+ '--private-dir', 'privat',
  'testpasswd']
 
 ..!SECTION
@@ -51,6 +50,7 @@ The Certificat Authority Root Creation
 
 >>> ca_parser = CaInitParser(prog="ftwpkicaroot")
 >>> ca_parser.set_defaults(**toml2dn(sys_argv))
+
 >>> args = ca_parser.parse_args(sys_argv)
 >>> args #doctest: +NORMALIZE_WHITESPACE +ELLIPSIS 
 Namespace(countryName='DE', 
@@ -67,10 +67,11 @@ Namespace(countryName='DE',
         'organizationalUnitName': 'Security'}, 
     conf_file=...Path('ca_root_conf.toml'), 
     passphrasefile='testpasswd', 
-    private_key='ca.key.pem', 
+    key_name='ca', 
     certificate='ca.cert', 
-    public_key='ca.pub.pem', 
-    privatdir='privat')
+    privatdir='privat', 
+    private_key='ca.key.pem', 
+    public_key='ca.pub.pem')
 
 .. !SECTION - Configuration
 

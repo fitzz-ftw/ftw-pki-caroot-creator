@@ -43,11 +43,19 @@ class CaInitParser(DistinguishedNameParser):
         self.add_argument(
             "-k",
             "--key",
-            "--private-key",
-            dest="private_key",
+            "--key-name",
+            dest="key_name",
             default="",
             help="Optional specific filename for the generated private key.",
         )
+        # self.add_argument(
+        #     "-k",
+        #     "--key",
+        #     "--private-key",
+        #     dest="private_key",
+        #     default="",
+        #     help="Optional specific filename for the generated private key.",
+        # )
         self.add_argument(
             "-c",
             "--cert",
@@ -56,16 +64,16 @@ class CaInitParser(DistinguishedNameParser):
             default="",
             help="Optional specific filename for the root certificate.",
         )
+        # self.add_argument(
+        #     "-p",
+        #     "--pub",
+        #     "--public-key",
+        #     dest="public_key",
+        #     default="",
+        #     help="Optional specific filename for the public key.",
+        # )
         self.add_argument(
-            "-p",
-            "--pub",
-            "--public-key",
-            dest="public_key",
-            default="",
-            help="Optional specific filename for the public key.",
-        )
-        self.add_argument(
-            "--privatdir",
+            "--private-dir",
             dest="privatdir",
             default="",
             help="Directory path for private key storage (overrides default).",
@@ -81,7 +89,11 @@ class CaInitParser(DistinguishedNameParser):
         :param namespace: Existing Namespace object to populate.
         :returns: Arguments adhering to the CaInitProtocol interface.
         """
-        return cast(CaInitProtocol, super().parse_args(args, namespace))
+        args_parsed = cast(Namespace,super().parse_args(args, namespace))
+        base_name = args_parsed.key_name
+        args_parsed.private_key = f"{base_name}.key.pem" if base_name else ""
+        args_parsed.public_key = f"{base_name}.pub.pem" if base_name else ""
+        return cast(CaInitProtocol, args_parsed)
 
 
 # !CLASS - CaInitParser

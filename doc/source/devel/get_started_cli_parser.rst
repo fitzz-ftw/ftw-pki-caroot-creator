@@ -22,10 +22,11 @@ Namespace(countryName='',
     dnsubject={}, 
     conf_file=None, 
     passphrasefile='passwort.txt', 
-    private_key='', 
+    key_name='', 
     certificate='',
-    public_key='', 
-    privatdir='')
+    privatdir='',
+    private_key='', 
+    public_key='')
 
 >>> cip.parse_args(["-subj", "/CN=Test" ,"passwort.txt"]) #doctest: +NORMALIZE_WHITESPACE
 Namespace(countryName='', 
@@ -37,10 +38,11 @@ Namespace(countryName='',
     dnsubject={'commonName': 'Test'}, 
     conf_file=None, 
     passphrasefile='passwort.txt', 
-    private_key='',
-    certificate='', 
-    public_key='', 
-    privatdir='')
+    key_name='', 
+    certificate='',
+    privatdir='',
+    private_key='', 
+    public_key='')
 
 
 

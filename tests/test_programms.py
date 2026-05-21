@@ -24,7 +24,7 @@ def test_prog_ca_root_creator_cert_full_coverage(mocker, tmp_path):
         "DE",  # Das behebt den "length must be 2" Fehler
         "-ST",
         "Mystate",
-        "--privatdir",
+        "--private-dir",
         str(tmp_path),
         "dummy_pass_file",
     ]
