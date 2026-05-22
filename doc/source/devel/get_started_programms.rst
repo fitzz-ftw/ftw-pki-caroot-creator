@@ -45,11 +45,11 @@ The Certificat Authority Root Creation
 
 .. SECTION - Configuration
 
->>> from ftwpki.baselibs.toml_utils import toml2dn
+>>> from ftwpki.baselibs.toml_utils import toml2_dn
 >>> from ftwpki.ca_root_creator.cli_parser import CaInitParser
 
 >>> ca_parser = CaInitParser(prog="ftwpkicaroot")
->>> ca_parser.set_defaults(**toml2dn(sys_argv))
+>>> ca_parser.set_defaults(**toml2_dn(sys_argv))
 
 >>> args = ca_parser.parse_args(sys_argv)
 >>> args #doctest: +NORMALIZE_WHITESPACE +ELLIPSIS 

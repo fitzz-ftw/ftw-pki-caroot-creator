@@ -16,7 +16,7 @@ from ftwpki.baselibs.core import (
     save_pem,
 )
 from ftwpki.baselibs.passwd import PasswordManager
-from ftwpki.baselibs.toml_utils import toml2dn
+from ftwpki.baselibs.toml_utils import toml2_dn
 from ftwpki.ca_root_creator.caroot import CertificateAuthority
 from ftwpki.ca_root_creator.cli_parser import CaInitParser
 
@@ -33,7 +33,7 @@ def prog_ca_root_creator_cert(argv: list[str] | None = None) -> int:
     """
     try:
         ca_parser = CaInitParser()
-        ca_parser.set_defaults(**toml2dn(argv))
+        ca_parser.set_defaults(**toml2_dn(argv))
         args = ca_parser.parse_args(argv)
         pwd_man = PasswordManager(private_dir=args.privatdir)
         ca_root_creator = CertificateAuthority(
