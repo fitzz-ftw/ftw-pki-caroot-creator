@@ -12,11 +12,12 @@ Main entry points for Root-CA initialization and certificate signing. (rw)
 import getpass
 from pathlib import Path
 
+from ftwpki.baselibs.cli_parser import TomlPreParser
 from ftwpki.baselibs.core import (
     save_pem,
 )
 from ftwpki.baselibs.passwd import PasswordManager
-from ftwpki.baselibs.toml_utils import toml2_dn
+from ftwpki.baselibs.toml_utils import toml2dn
 from ftwpki.ca_root_creator.caroot import CertificateAuthority
 from ftwpki.ca_root_creator.cli_parser import CaInitParser
 
@@ -32,8 +33,10 @@ def prog_ca_root_creator_cert(argv: list[str] | None = None) -> int:
     :returns: Exit code (0 for success, 1 for error).
     """
     try:
+        pre_parser = TomlPreParser()
+        pre_args, _ = pre_parser.parse_known_args(argv)
         ca_parser = CaInitParser()
-        ca_parser.set_defaults(**toml2_dn(argv))
+        ca_parser.set_defaults(**toml2dn(pre_args.conf_file)) if pre_args.conf_file else ...
         args = ca_parser.parse_args(argv)
         pwd_man = PasswordManager(private_dir=args.privatdir)
         ca_root_creator = CertificateAuthority(
