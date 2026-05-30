@@ -16,6 +16,7 @@ from typing import cast
 
 from ftwpki.baselibs.cli_parser import (
     DistinguishedNameParser,
+    DistinguishedNameParser_DEV,
 )
 from ftwpki.ca_root_creator.protocols import CaInitProtocol
 
@@ -97,6 +98,77 @@ class CaInitParser(DistinguishedNameParser):
 
 
 # !CLASS - CaInitParser
+
+
+
+# CLASS - CaInitParser_DEV
+class CaInitParser_DEV(DistinguishedNameParser_DEV):
+    """
+    Parser for Root-CA initialization arguments. (rw)
+
+    Extends the DistinguishedNameParser to include specific arguments for
+    passphrase secrets, key storage, and certificate filenames.
+    """
+    def __init__(self, *args, **kwargs) -> None:
+        """
+        Initialize the CaInitParser_DEV instance. (ro)
+
+        Calls the base class constructor and sets up the argument 
+        parser with Root-CA specific options.
+        """
+        kwargs["no_config_file"] = True
+        super().__init__(*args, **kwargs)
+
+
+    def _setup_parser(self) -> None:
+        """
+        Configure the argument parser with Root-CA specific options. (ro)
+
+        Sets up arguments for the passphrase file, private/public keys,
+        certificates, and the private storage directory.
+        """
+        super()._setup_parser()
+        self.add_argument(
+            "passphrasefile", help="Filename of the encrypted secret containing the CA passphrase."
+        )
+        self.add_argument("conf_file", help="Path to the TOML configuration file.", 
+                          metavar="configfile")
+        self.add_argument(
+            "-k",
+            "--key",
+            "--key-name",
+            dest="key_name",
+            default="",
+            help="Optional specific filename for the generated private key.",
+        )
+        self.add_argument(
+            "-c",
+            "--cert",
+            "--certificate",
+            dest="certificate",
+            default="",
+            help="Optional specific filename for the root certificate.",
+        )
+
+    def parse_args(
+        self, args: list[str] | None = None, namespace: Namespace | None = None
+    ) -> CaInitProtocol:
+        """
+        Parse command-line arguments and cast to CaInitProtocol. (ro)
+
+        :param args: List of command-line argument strings.
+        :param namespace: Existing Namespace object to populate.
+        :returns: Arguments adhering to the CaInitProtocol interface.
+        """
+        args_parsed = cast(Namespace, super().parse_args(args, namespace))
+        base_name = args_parsed.key_name
+        args_parsed.private_key = f"{base_name}.key.pem" if base_name else ""
+        args_parsed.public_key = f"{base_name}.pub.pem" if base_name else ""
+        return cast(CaInitProtocol, args_parsed)
+
+
+# !CLASS - CaInitParser_DEV
+
 
 # FUNCTION - get_ca_init_parser
 def get_ca_init_parser() -> CaInitParser:
