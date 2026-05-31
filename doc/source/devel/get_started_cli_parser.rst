@@ -12,7 +12,7 @@ CaInitParser(prog=...,
     conflict_handler='error', 
     add_help=True)
 
->>> cip.parse_args(["passwort.txt"]) #doctest: +NORMALIZE_WHITESPACE
+>>> cip.parse_args(["passwort.txt", "test.pki"]) #doctest: +NORMALIZE_WHITESPACE
 Namespace(countryName='', 
     stateOrProvinceName='', 
     localityName='', 
@@ -20,15 +20,14 @@ Namespace(countryName='',
     organizationalUnitName='', 
     commonName='', 
     dnsubject={}, 
-    conf_file=None, 
     passphrasefile='passwort.txt', 
+    conf_file='test.pki', 
     key_name='', 
-    certificate='',
-    privatdir='',
+    certificate='', 
     private_key='', 
     public_key='')
 
->>> cip.parse_args(["-subj", "/CN=Test" ,"passwort.txt"]) #doctest: +NORMALIZE_WHITESPACE
+>>> cip.parse_args(["-subj", "/CN=Test" ,"passwort.txt", "test.pki"]) #doctest: +NORMALIZE_WHITESPACE
 Namespace(countryName='', 
     stateOrProvinceName='', 
     localityName='', 
@@ -36,11 +35,10 @@ Namespace(countryName='',
     organizationalUnitName='', 
     commonName='Test', 
     dnsubject={'commonName': 'Test'}, 
-    conf_file=None, 
     passphrasefile='passwort.txt', 
+    conf_file='test.pki', 
     key_name='', 
-    certificate='',
-    privatdir='',
+    certificate='', 
     private_key='', 
     public_key='')
 

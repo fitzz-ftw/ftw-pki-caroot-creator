@@ -12,19 +12,17 @@ Main entry points for Root-CA initialization and certificate signing. (rw)
 import getpass
 from pathlib import Path
 
-from ftwpki.baselibs.cli_parser import TomlPreParser
 from ftwpki.baselibs.core import (
     RSAPrivateKey,
     load_certificate_from_pem,
     load_private_key_from_pem,
-    save_pem,
     x509,
 )
 from ftwpki.baselibs.package import PKIPackage
 from ftwpki.baselibs.passwd import PasswordManager
 from ftwpki.baselibs.toml_utils import toml2dn
 from ftwpki.ca_root_creator.caroot import CertificateAuthority
-from ftwpki.ca_root_creator.cli_parser import CaInitParser, CaInitParser_DEV
+from ftwpki.ca_root_creator.cli_parser import CaInitParser
 from ftwpki.ca_root_creator.protocols import CaInitProtocol
 
 
@@ -39,59 +37,14 @@ def prog_ca_root_creator_cert(argv: list[str] | None = None) -> int:
     :returns: Exit code (0 for success, 1 for error).
     """
     try:
-        pre_parser = TomlPreParser()
-        pre_args, _ = pre_parser.parse_known_args(argv)
-        ca_parser = CaInitParser()
-        ca_parser.set_defaults(**toml2dn(pre_args.conf_file)) if pre_args.conf_file else ...
-        args = ca_parser.parse_args(argv)
-        pwd_man = PasswordManager(private_dir=args.privatdir)
-        ca_root_creator = CertificateAuthority(
-            common_name=args.commonName,
-            country=args.countryName,
-            state=args.stateOrProvinceName,
-            location=args.localityName,
-            organization=args.organizationName,
-            organizational_unit=args.organizationalUnitName,
-        )
-        ca_root_creator.generate_key_pair(
-            passphrase=pwd_man.decrypt_password_file(
-                encrypted_filename=args.passphrasefile,
-                password=getpass.getpass("Enter Passphrase:"),
-            )
-        )
-        save_pem(ca_root_creator.private_key, Path(f"{args.privatdir}/{args.private_key}"), 
-                 is_private=True)
-        save_pem(ca_root_creator.public_key, Path(f"{args.public_key}"), is_private=False)
-        ca_root_creator.create_root_certificate(
-            passphrase=pwd_man.decrypt_password_file(
-                encrypted_filename=args.passphrasefile,
-                password=getpass.getpass("Enter Passphrase:"),
-            ),
-            days=20 * 370,
-        )
-        save_pem(ca_root_creator.certificate, Path(f"{args.certificate}"), is_private=False)
-        return 0
-    except Exception as e:
-        print(e)
-        return 1
-
-def prog_ca_root_creator_cert_DEV(argv: list[str] | None = None) -> int:
-    """
-    Entry point for initializing a new Root-CA. (rw)
-
-    Processes CLI arguments, generates the RSA key pair, and creates the
-    self-signed root certificate.
-
-    :param argv: Optional list of command-line arguments.
-    :returns: Exit code (0 for success, 1 for error).
-    """
-    try:
         # SECTION - Configuration
         pki_file: Path|None = None
-        pre_parser: CaInitParser_DEV = CaInitParser_DEV(add_help=False, allow_abbrev=False)
+        pre_parser: CaInitParser = CaInitParser(add_help=False, allow_abbrev=False)
         pre_args, _ = pre_parser.parse_known_args(argv)
-        ca_parser: CaInitParser_DEV = CaInitParser_DEV()
-        ca_parser.set_defaults(**toml2dn(pre_args.conf_file)) if pre_args.conf_file else ...
+        ca_parser: CaInitParser = CaInitParser()
+        ca_parser.set_defaults(
+            **toml2dn(Path(pre_args.conf_file).read_text())
+        ) if pre_args.conf_file else ...
         del pre_parser
         args: CaInitProtocol = ca_parser.parse_args(argv)
         conf_file:Path = Path(args.conf_file)
@@ -167,8 +120,7 @@ if __name__ == "__main__":  # pragma: no cover
     testfiles_dir = Path(__file__).parents[3] / "doc/source/devel"
     test_files = [
         "get_started_programms.rst",
-        "get_started_programms_DEV.rst",
-        "get_started_run_programms_DEV.rst",
+        "get_started_run_programms.rst",
         "get_started_cli_parser.rst",
         "get_started_caroot.rst",
         "get_started_protocols.rst",

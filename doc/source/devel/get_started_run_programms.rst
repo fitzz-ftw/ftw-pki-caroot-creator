@@ -40,15 +40,15 @@ The Certificat Authority Root Creation
 
 ..!SECTION
 
->>> from ftwpki.ca_root_creator.programms import prog_ca_root_creator_cert_DEV
+>>> from ftwpki.ca_root_creator.programms import prog_ca_root_creator_cert
 
->>> prog_ca_root_creator_cert_DEV(sys_argv)
+>>> prog_ca_root_creator_cert(sys_argv)
 Enter Passphrase:
 0
 
 
->>> prog_ca_root_creator_cert_DEV(sys_argv)
-File 'ca_root.toml' not found!
+>>> prog_ca_root_creator_cert(sys_argv)
+[Errno 2] No such file or directory: 'ca_root.toml'
 1
 
 >>> env.clean_home()
@@ -66,7 +66,7 @@ File 'ca_root.toml' not found!
 ...     return ""
 
 >>> getpass.getpass = stub_keyboard_interrupt
->>> prog_ca_root_creator_cert_DEV(sys_argv)
+>>> prog_ca_root_creator_cert(sys_argv)
 Enter Passphrase:
 1
 

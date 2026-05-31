@@ -5,6 +5,8 @@ The Certificat Authority Root Creation
 
 .. SECTION - Setup
 
+>>> test_data_pre= "test_ok_data"
+
 >>> from fitzzftw.devtools.testinfra import TestHomeEnvironment
 >>> from pathlib import Path
 >>> env = TestHomeEnvironment(Path("doc/source/devel/testhome"))
@@ -13,31 +15,24 @@ The Certificat Authority Root Creation
 .. !SECTION
 .. SECTION - Prepare
 
->>> from pathlib import Path
->>> private_dir:Path = Path("privat")
->>> private_dir.mkdir(parents=True, exist_ok=True)
->>> test_paswd_path = env.copy2cwd("privat/testpasswd")
->>> conf_file = env.copy2cwd("ca_root_conf.toml")
+>> print(f"{test_data_pre}/carootsecret")
+
+>>> test_paswd_path = env.copy2cwd(f"{test_data_pre}/carootsecret", "carootsecret")
+
+>>> conf_file = env.copy2cwd(f"{test_data_pre}/ca_root_conf.toml", "ca_root.toml")
 
 >>> def getpasswd(prompt:str)->str:
 ...     print(prompt)
-...     return "strenggeheim"
+...     return "secret"
 
->>> cmd_line="--conf-file ca_root_conf.toml -ST Mystate --commonName 'Fitzz CA Root' "
->>> cmd_line += " -k ca  --cert ca.cert"
->>> cmd_line += " --private-dir privat"
->>> cmd_line += " testpasswd"
+>>> cmd_line = " -k caroot  --cert caroot.cert.pem "
+>>> cmd_line += " carootsecret "
+>>> cmd_line +=" ca_root.toml "
 
 >>> import shlex
 >>> sys_argv= shlex.split(cmd_line) 
 >>> sys_argv #doctest: +NORMALIZE_WHITESPACE
-['--conf-file', 'ca_root_conf.toml', 
- '-ST', 'Mystate', 
- '--commonName', 'Fitzz CA Root',
- '-k', 'ca',
- '--cert', 'ca.cert',
- '--private-dir', 'privat',
- 'testpasswd']
+['-k', 'caroot', '--cert', 'caroot.cert.pem', 'carootsecret', 'ca_root.toml']
 
 ..!SECTION
 
@@ -47,48 +42,56 @@ The Certificat Authority Root Creation
 
 >>> from ftwpki.baselibs.toml_utils import toml2dn
 >>> from ftwpki.ca_root_creator.cli_parser import CaInitParser
->>> from ftwpki.baselibs.cli_parser import TomlPreParser
 
->>> ca_parser = CaInitParser(prog="ftwpkicaroot")
+>>> pki_file: Path|None = None
 
->>> pre_parser = TomlPreParser()
+>>> pre_parser = CaInitParser(prog="ftwpkicaroot", add_help=False, allow_abbrev=False)
 >>> pre_args , _ = pre_parser.parse_known_args(sys_argv)
-
->>> pre_conf = toml2dn(pre_args.conf_file)
+>>> ca_parser = CaInitParser(prog="ftwpkicaroot")
+>>> pre_conf = toml2dn(Path(pre_args.conf_file).read_text())
 
 >>> ca_parser.set_defaults(**pre_conf)
+
+>>> del pre_parser
 
 >>> args = ca_parser.parse_args(sys_argv)
 >>> args #doctest: +NORMALIZE_WHITESPACE +ELLIPSIS 
 Namespace(countryName='DE', 
-    stateOrProvinceName='Mystate', 
-    localityName='Somewherecity', 
-    organizationName='Fitzz TeXnik Welt', 
-    organizationalUnitName='Security', 
-    commonName='Fitzz CA Root', 
+    stateOrProvinceName='', 
+    localityName='Berlin', 
+    organizationName='Muster-Verband e.V.', 
+    organizationalUnitName='Zentraler PKI-Dienst', 
+    commonName='Muster-Verband Bundesverband Root CA', 
     dnsubject={'countryName': 'DE', 
-        'stateOrProvinceName': 'Mystate', 
-        'organizationName': 'Fitzz TeXnik Welt', 
-        'commonName': 'Fitzz CA Root', 
-        'localityName': 'Somewherecity', 
-        'organizationalUnitName': 'Security'}, 
-    conf_file=...Path('ca_root_conf.toml'), 
-    passphrasefile='testpasswd', 
-    key_name='ca', 
-    certificate='ca.cert', 
-    privatdir='privat', 
-    private_key='ca.key.pem', 
-    public_key='ca.pub.pem')
+        'organizationName': 'Muster-Verband e.V.', 
+        'commonName': 'Muster-Verband Bundesverband Root CA', 
+        'localityName': 'Berlin', 
+        'organizationalUnitName': 'Zentraler PKI-Dienst'}, 
+    passphrasefile='carootsecret', 
+    conf_file='ca_root.toml', 
+    key_name='caroot', 
+    certificate='caroot.cert.pem', 
+    private_key='caroot.key.pem', 
+    public_key='caroot.pub.pem')
+
+>>> conf_file = Path(args.conf_file)
+>>> pass_file = Path(args.passphrasefile)
 
 .. !SECTION - Configuration
 
 .. SECTION - Passwordhandling
 
 >>> from ftwpki.baselibs.passwd import PasswordManager
->>> pwd_man = PasswordManager(private_dir=args.privatdir)
+>>> pwd_man = PasswordManager(private_dir='')
 >>> pwd_man
-PasswordManager(private_dir='privat')
+PasswordManager(private_dir='.')
 
+>>> password  = getpasswd("Enter Passphrase:")
+Enter Passphrase:
+
+.. !SECTION - Passwordhandling
+
+.. SECTION - Certificatecreating
 >>> from ftwpki.ca_root_creator.caroot import CertificateAuthority
 
 >>> ca_root_creator = CertificateAuthority(
@@ -100,34 +103,66 @@ PasswordManager(private_dir='privat')
 ...     organizational_unit = args.organizationalUnitName    
 ... )
 
->>> ca_root_creator.generate_key_pair(passphrase=pwd_man.decrypt_password_file(
-...         encrypted_filename= args.passphrasefile,
-...         password = getpasswd("Enter Passphrase:")
-... ))
-Enter Passphrase:
 
->>> from ftwpki.baselibs.core import save_pem
->>> save_pem(ca_root_creator.private_key, 
-...     Path(f"{args.privatdir}/{args.private_key}"), 
-...     is_private=True)
->>> save_pem(ca_root_creator.public_key, Path(f"{args.public_key}"), is_private=False)
 
 >>> ca_root_creator.create_root_certificate(passphrase= pwd_man.decrypt_password_file(
 ...         encrypted_filename= args.passphrasefile,
-...         password = getpasswd("Enter Passphrase:")
+...         password = password
 ... ), days = 20*370)
-Enter Passphrase:
 
->>> save_pem(ca_root_creator.certificate, Path(f"{args.certificate}"), is_private=False)
+>>> from ftwpki.baselibs.core import load_private_key_from_pem,load_certificate_from_pem
+
+>>> private_key=load_private_key_from_pem(pem_data=ca_root_creator.private_key, 
+...     passphrase=pwd_man.decrypt_password_file(
+...         encrypted_filename= args.passphrasefile,
+...         password = password))
+
+>>> del password
+
+>>> cert_obj = load_certificate_from_pem(ca_root_creator.certificate)
 
 
-..!SECTION - Passwordhandling
+.. SECTION - pki- Container
 
-..!SECTION
+>>> from ftwpki.baselibs.package import PKIPackage
+
+>>> pki_pack = PKIPackage()
+
+>>> pki_pack.additional_files[str(conf_file.with_suffix(".policy").name)]=conf_file.read_bytes()
+>>> pki_pack.additional_files[pass_file.name]=pass_file.read_bytes()
+>>> pki_pack.message = pass_file.name
+>>> pki_pack.additional_files["CA.key.pem"]=ca_root_creator.private_key
+
+
+>>> pki_pack.recipient_cert=cert_obj
+>>> pki_pack.caroot_cert=cert_obj
+
+
+
+
+>>> pki_pack.private_key=private_key
+>>> pki_pack.ca_cert=cert_obj
+
+>>> pki_file = pki_pack.save(conf_file)
+
+.. !SECTION - pki- Container
+
+.. SECTION - Cleanup CWD
+
+>>> conf_file.unlink()
+
+>>> pass_file.unlink()
+
+.. !SECTION - Cleanup CWD
+
+>>> pki_file.is_file()
+True
+
+.. !SECTION - End programm
 
 .. SECTION - Teardown
 
->> env.clean_home()
+>>> env.clean_home()
 >>> env.teardown()
 
 .. !SECTION
