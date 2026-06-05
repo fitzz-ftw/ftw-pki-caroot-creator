@@ -53,3 +53,12 @@ CaInitParser(prog='ftwpkicaroot',
     formatter_class=<class 'argparse.HelpFormatter'>, 
     conflict_handler='error', 
     add_help=True)
+
+>>> cip = CaInitParser(run_setup=False)
+>>> cip #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+CaInitParser(prog=..., 
+    usage=None, 
+    description=None, 
+    formatter_class=<class 'argparse.HelpFormatter'>, 
+    conflict_handler='error', 
+    add_help=True)

@@ -82,7 +82,7 @@ def prog_ca_root_creator_cert(argv: list[str] | None = None) -> int:
 
         #SECTION - Pack PKI-Container
         pki_pack: PKIPackage = PKIPackage()
-        pki_pack.additional_files[str(conf_file.with_suffix(".policy").name)]=conf_file.read_bytes()
+        pki_pack.additional_files["ca_root.policy"]=conf_file.read_bytes()
         pki_pack.additional_files[pass_file.name]=pass_file.read_bytes()
         pki_pack.message = pass_file.name
         pki_pack.additional_files["CA.key.pem"]=ca_root_creator.private_key

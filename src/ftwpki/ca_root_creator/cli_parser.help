@@ -1,0 +1,9 @@
+[rootca]
+[rootca.passphrasefile]
+en = "Filename of the encrypted secret containing the CA passphrase."
+[rootca.conf_file]
+en = "Path to the TOML configuration file."
+[rootca.key_name]
+en = "Optional specific filename for the generated private key."
+[rootca.certificate]
+en = "Optional specific filename for the root certificate."
