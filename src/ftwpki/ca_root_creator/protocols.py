@@ -33,8 +33,8 @@ class CaInitProtocol(DistinguishedNameProtocol):
     """Filename of the encrypted passphrase secret."""
     certificate: str
     """Filename for the self-signed root certificate."""
-    #DOC - new
     conf_file:str
+    """Path to the configuration file for the CA."""
 
 
 # !CLASS - CaInitProtocol

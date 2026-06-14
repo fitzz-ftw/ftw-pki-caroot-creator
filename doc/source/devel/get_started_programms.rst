@@ -5,7 +5,7 @@ The Certificat Authority Root Creation
 
 .. SECTION - Setup
 
->>> test_data_pre= "test_ok_data"
+>>> test_data_pre= "data-root-creator"
 
 >>> from fitzzftw.devtools.testinfra import TestHomeEnvironment
 >>> from pathlib import Path
@@ -41,13 +41,13 @@ The Certificat Authority Root Creation
 .. SECTION - Configuration
 
 >>> from ftwpki.baselibs.toml_utils import toml2dn
->>> from ftwpki.ca_root_creator.cli_parser import CaInitParser
+>>> from ftwpki.ca_root_creator.cli_parser import ca_init_parser
 
 >>> pki_file: Path|None = None
 
->>> pre_parser = CaInitParser(prog="ftwpkicaroot", add_help=False, allow_abbrev=False)
+>>> pre_parser = ca_init_parser(prog="ftwpkicaroot", add_help=False, allow_abbrev=False)
 >>> pre_args , _ = pre_parser.parse_known_args(sys_argv)
->>> ca_parser = CaInitParser(prog="ftwpkicaroot")
+>>> ca_parser = ca_init_parser(prog="ftwpkicaroot")
 >>> pre_conf = toml2dn(Path(pre_args.conf_file).read_text())
 
 >>> ca_parser.set_defaults(**pre_conf)
@@ -56,23 +56,21 @@ The Certificat Authority Root Creation
 
 >>> args = ca_parser.parse_args(sys_argv)
 >>> args #doctest: +NORMALIZE_WHITESPACE +ELLIPSIS 
-Namespace(countryName='DE', 
-    stateOrProvinceName='', 
-    localityName='Berlin', 
-    organizationName='Muster-Verband e.V.', 
-    organizationalUnitName='Zentraler PKI-Dienst', 
-    commonName='Muster-Verband Bundesverband Root CA', 
+CaInitArguments(certificate='caroot.cert.pem'
+    commonName='Muster-Verband Bundesverband Root CA'
+    conf_file='ca_root.toml'
+    countryName='DE'
     dnsubject={'countryName': 'DE', 
-        'organizationName': 'Muster-Verband e.V.', 
-        'commonName': 'Muster-Verband Bundesverband Root CA', 
         'localityName': 'Berlin', 
-        'organizationalUnitName': 'Zentraler PKI-Dienst'}, 
-    passphrasefile='carootsecret', 
-    conf_file='ca_root.toml', 
-    key_name='caroot', 
-    certificate='caroot.cert.pem', 
-    private_key='caroot.key.pem', 
-    public_key='caroot.pub.pem')
+        'organizationName': 'Muster-Verband e.V.', 
+        'organizationalUnitName': 'Zentraler PKI-Dienst', 
+        'commonName': 'Muster-Verband Bundesverband Root CA'}
+    key_name='caroot'
+    localityName='Berlin'
+    organizationName='Muster-Verband e.V.'
+    organizationalUnitName='Zentraler PKI-Dienst'
+    passphrasefile='carootsecret'
+    stateOrProvinceName='')
 
 >>> conf_file = Path(args.conf_file)
 >>> pass_file = Path(args.passphrasefile)

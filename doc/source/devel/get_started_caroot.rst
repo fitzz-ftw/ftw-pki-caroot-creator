@@ -39,11 +39,11 @@ Verzeichnis für die PKI-Artefakte vorbereiten
 CA-Instanz mit Metadaten initialisieren
 
 >>> ca = CertificateAuthority(
-...     common_name="FTW Dev Root CA",
+...     common_name="Example Dev Root CA",
 ...     country="DE",
 ...     state="Hessen",
 ...     location="Frankfurt",
-...     organization="FTW Projekte"
+...     organization="Example Projekte"
 ... )
 
 >>> ca #doctest: +ELLIPSIS

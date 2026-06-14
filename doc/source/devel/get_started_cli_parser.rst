@@ -5,7 +5,7 @@ Comand Line Parser
 
 >>> cip = CaInitParser()
 >>> cip #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-CaInitParser(prog=..., 
+PKIBaseParser(prog=..., 
     usage=None, 
     description=None, 
     formatter_class=<class 'argparse.HelpFormatter'>, 
@@ -13,41 +13,37 @@ CaInitParser(prog=...,
     add_help=True)
 
 >>> cip.parse_args(["passwort.txt", "test.pki"]) #doctest: +NORMALIZE_WHITESPACE
-Namespace(countryName='', 
-    stateOrProvinceName='', 
-    localityName='', 
-    organizationName='', 
-    organizationalUnitName='', 
-    commonName='', 
-    dnsubject={}, 
-    passphrasefile='passwort.txt', 
-    conf_file='test.pki', 
-    key_name='', 
-    certificate='', 
-    private_key='', 
-    public_key='')
+CaInitArguments(certificate=''
+commonName=''
+conf_file='test.pki'
+countryName=''
+dnsubject={}
+key_name=''
+localityName=''
+organizationName=''
+organizationalUnitName=''
+passphrasefile='passwort.txt'
+stateOrProvinceName='')
 
 >>> cip.parse_args(["-subj", "/CN=Test" ,"passwort.txt", "test.pki"]) #doctest: +NORMALIZE_WHITESPACE
-Namespace(countryName='', 
-    stateOrProvinceName='', 
-    localityName='', 
-    organizationName='', 
-    organizationalUnitName='', 
-    commonName='Test', 
-    dnsubject={'commonName': 'Test'}, 
-    passphrasefile='passwort.txt', 
-    conf_file='test.pki', 
-    key_name='', 
-    certificate='', 
-    private_key='', 
-    public_key='')
+CaInitArguments(certificate=''
+    commonName='Test'
+    conf_file='test.pki'
+    countryName=''
+    dnsubject={'commonName': 'Test'}
+    key_name=''
+    localityName=''
+    organizationName=''
+    organizationalUnitName=''
+    passphrasefile='passwort.txt'
+    stateOrProvinceName='')
 
 
 
 >>> from ftwpki.ca_root_creator.cli_parser import get_ca_init_parser
 
 >>> get_ca_init_parser() #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-CaInitParser(prog='ftwpkicaroot', 
+PKIBaseParser(prog='ftwpkicaroot', 
     usage=None, 
     description='Initialize a Root-CA with specified parameters.', 
     formatter_class=<class 'argparse.HelpFormatter'>, 
@@ -56,7 +52,7 @@ CaInitParser(prog='ftwpkicaroot',
 
 >>> cip = CaInitParser(run_setup=False)
 >>> cip #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-CaInitParser(prog=..., 
+PKIBaseParser(prog=..., 
     usage=None, 
     description=None, 
     formatter_class=<class 'argparse.HelpFormatter'>, 

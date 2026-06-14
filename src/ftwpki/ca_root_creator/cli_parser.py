@@ -10,16 +10,16 @@ Command-line interface parser for Root-CA initialization, handling
 Distinguished Name data and file path configuration. (rw)
 """
 
-from argparse import Namespace
 from pathlib import Path
-from typing import cast
+from typing import TypeAlias
 
-from ftwpki.baselibs.cli_parser import (
+from ftwpki.baselibs._cli_parser import (
     _HELP,
-    DistinguishedNameParser,
+    DistinguishedNameArguments,
+    PKIBaseParser,
     load_help_entries,
+    parser_factory_creator,
 )
-from ftwpki.ca_root_creator.protocols import CaInitProtocol
 
 HELP_FILE = Path(__file__).parent.joinpath("cli_parser.help")
 
@@ -31,97 +31,47 @@ load_help_entries(_HELP, HELP_FILE)
 
 LANG="en"
 
-# CLASS - CaInitParser
-class CaInitParser(DistinguishedNameParser):
-    """
-    Parser for Root-CA initialization arguments. (rw)
+class CaInitArguments(DistinguishedNameArguments):
+    __slots__ = ["passphrasefile", "conf_file", "key_name", "certificate"]
+    helpid = ["rootca"]
+    arg_data = {
+        "passphrasefile": {"flags": [], "kws": {}, "pre": {"nargs": "?"}},
+        "conf_file": {"flags": [], "kws": {}, "pre": {"nargs": "?"}},
+        "key_name": {"flags": ["-k", "--key", "--key-name"], "kws": {"default": ""}, "pre": {}},
+        "certificate": {
+            "flags": ["-c", "--cert", "--certificate"],
+            "kws": {"default": ""},
+            "pre": {},
+        },
+    }
 
-    Extends the DistinguishedNameParser to include specific arguments for
-    passphrase secrets, key storage, and certificate filenames.
-    """
-    def __init__(self, *args, run_setup=True, **kwargs) -> None:
-        """
-        Initialize the CaInitParser instance. (ro)
+    def __init__(self) -> None:
+        super().__init__()
+        self.passphrasefile:str=""
+        self.conf_file:str=""
+        self.key_name:str=""
+        self.certificate:str=""
 
-        Calls the base class constructor and sets up the argument 
-        parser with Root-CA specific options.
-        """
-        super().__init__(*args, run_setup=False, **kwargs)
-        self._help.update("rootca")
-        if run_setup:
-            self._setup_parser()
+CaInit: TypeAlias = CaInitArguments
+ca_init_parser = parser_factory_creator(CaInitArguments)
 
+def CaInitParser(**kwargs) -> PKIBaseParser[CaInitArguments]:
+    kwargs.pop("run_setup", None) 
+    parser: PKIBaseParser[CaInit] = parser_factory_creator(
+        CaInitArguments
+    )(**kwargs)
+    return parser
 
-    def _setup_parser(self) -> None:
-        """
-        Configure the argument parser with Root-CA specific options. (ro)
-
-        Sets up arguments for the passphrase file, private/public keys,
-        certificates, and the private storage directory.
-        """
-        super()._setup_parser()
-        self.add_argument(
-            "passphrasefile",
-            nargs="?" if self._preparser else None,
-            help=self._help(
-                "passphrasefile"
-            ),  # "Filename of the encrypted secret containing the CA passphrase.",
-        )
-        self.add_argument(
-            "conf_file",
-            help=self._help("conf_file"),  # "Path to the TOML configuration file.",
-            nargs="?" if self._preparser else None,
-            metavar="configfile",
-        )
-        self.add_argument(
-            "-k",
-            "--key",
-            "--key-name",
-            dest="key_name",
-            default="",
-            help=self._help(
-                "key_name"
-            ),  # "Optional specific filename for the generated private key.",
-        )
-        self.add_argument(
-            "-c",
-            "--cert",
-            "--certificate",
-            dest="certificate",
-            default="",
-            help=self._help(
-                "certificate"
-            ),  # "Optional specific filename for the root certificate.",
-        )
-
-    def parse_args(
-        self, args: list[str] | None = None, namespace: Namespace | None = None
-    ) -> CaInitProtocol:
-        """
-        Parse command-line arguments and cast to CaInitProtocol. (ro)
-
-        :param args: List of command-line argument strings.
-        :param namespace: Existing Namespace object to populate.
-        :returns: Arguments adhering to the CaInitProtocol interface.
-        """
-        args_parsed = cast(Namespace, super().parse_args(args, namespace))
-        base_name = args_parsed.key_name
-        args_parsed.private_key = f"{base_name}.key.pem" if base_name else ""
-        args_parsed.public_key = f"{base_name}.pub.pem" if base_name else ""
-        return cast(CaInitProtocol, args_parsed)
-
-
-# !CLASS - CaInitParser
 
 
 # FUNCTION - get_ca_init_parser
-def get_ca_init_parser() -> CaInitParser:
+def get_ca_init_parser():
     """
     Factory function to create and return a configured CaInitParser instance. (ro)
 
     :returns: An instance of CaInitParser ready for argument parsing.
     """
-    parser = CaInitParser(
+    parser:PKIBaseParser[CaInit] = CaInitParser(
         prog="ftwpkicaroot",
         description="Initialize a Root-CA with specified parameters.",
         epilog="Example usage: ftwpkicaroot --help for more information.",
@@ -145,8 +95,8 @@ if __name__ == "__main__": # pragma: no cover
     testfiles_dir = Path(__file__).parents[3] / "doc/source/devel"
 
     test_files = [
-        "test_new_parser.rst",
-        #   "get_started_cli_parser.rst",
+        # "test_new_parser.rst",
+          "get_started_cli_parser.rst",
     ]
     for file in test_files:
         test_file = testfiles_dir / file

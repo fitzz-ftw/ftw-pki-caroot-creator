@@ -12,6 +12,7 @@ Main entry points for Root-CA initialization and certificate signing. (rw)
 import getpass
 from pathlib import Path
 
+from ftwpki.baselibs._cli_parser import PKIBaseParser
 from ftwpki.baselibs.core import (
     RSAPrivateKey,
     load_certificate_from_pem,
@@ -22,8 +23,7 @@ from ftwpki.baselibs.package import PKIPackage
 from ftwpki.baselibs.passwd import PasswordManager
 from ftwpki.baselibs.toml_utils import toml2dn
 from ftwpki.ca_root_creator.caroot import CertificateAuthority
-from ftwpki.ca_root_creator.cli_parser import CaInitParser
-from ftwpki.ca_root_creator.protocols import CaInitProtocol
+from ftwpki.ca_root_creator.cli_parser import CaInit, CaInitArguments, ca_init_parser
 
 
 def prog_ca_root_creator_cert(argv: list[str] | None = None) -> int:
@@ -39,14 +39,14 @@ def prog_ca_root_creator_cert(argv: list[str] | None = None) -> int:
     try:
         # SECTION - Configuration
         pki_file: Path|None = None
-        pre_parser: CaInitParser = CaInitParser(add_help=False, allow_abbrev=False)
+        pre_parser: PKIBaseParser[CaInit]  = ca_init_parser(add_help=False, allow_abbrev=False)
         pre_args, _ = pre_parser.parse_known_args(argv)
-        ca_parser: CaInitParser = CaInitParser()
+        ca_parser: PKIBaseParser[CaInit] = ca_init_parser()
         ca_parser.set_defaults(
             **toml2dn(Path(pre_args.conf_file).read_text())
         ) if pre_args.conf_file else ...
         del pre_parser
-        args: CaInitProtocol = ca_parser.parse_args(argv)
+        args: CaInitArguments = ca_parser.parse_args(argv)
         conf_file:Path = Path(args.conf_file)
         pass_file: Path = Path(args.passphrasefile)
         # !SECTION - Configuration

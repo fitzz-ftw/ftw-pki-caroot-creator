@@ -1,21 +1,20 @@
 The Certificat Authority Root Creation
 #########################################
 
+>>> from pathlib import Path
 
 
 .. SECTION - Setup
 
->>> test_data_pre= "test_ok_data"
+>>> test_data_pre= Path("data-root-creator")
 
 >>> from fitzzftw.devtools.testinfra import TestHomeEnvironment
->>> from pathlib import Path
 >>> env = TestHomeEnvironment(Path("doc/source/devel/testhome"))
 >>> env.setup(True)
 
 .. !SECTION
 .. SECTION - Prepare
 
->> print(f"{test_data_pre}/carootsecret")
 
 >>> test_paswd_path = env.copy2cwd(f"{test_data_pre}/carootsecret", "carootsecret")
 
