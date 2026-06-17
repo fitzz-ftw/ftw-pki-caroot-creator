@@ -16,7 +16,6 @@ from typing import TypeAlias
 from ftwpki.baselibs._cli_parser import (
     _HELP,
     DistinguishedNameArguments,
-    PKIBaseParser,
     load_help_entries,
     parser_factory_creator,
 )
@@ -32,6 +31,9 @@ load_help_entries(_HELP, HELP_FILE)
 LANG="en"
 
 class CaInitArguments(DistinguishedNameArguments):
+    """
+    Class for Root-CA initialization arguments.
+    """
     __slots__ = ["passphrasefile", "conf_file", "key_name", "certificate"]
     helpid = ["rootca"]
     arg_data = {
@@ -46,38 +48,29 @@ class CaInitArguments(DistinguishedNameArguments):
     }
 
     def __init__(self) -> None:
+        """
+        Initialize the Root-CA argument container with empty values.
+        """
         super().__init__()
         self.passphrasefile:str=""
         self.conf_file:str=""
         self.key_name:str=""
         self.certificate:str=""
 
+
+"""
+Type alias for the Root-CA initialization argument container.
+"""
 CaInit: TypeAlias = CaInitArguments
+
 ca_init_parser = parser_factory_creator(CaInitArguments)
+"""
+Factory function for creating Root-CA initialization parsers.
 
-def CaInitParser(**kwargs) -> PKIBaseParser[CaInitArguments]:
-    kwargs.pop("run_setup", None) 
-    parser: PKIBaseParser[CaInit] = parser_factory_creator(
-        CaInitArguments
-    )(**kwargs)
-    return parser
+:type: Callable
+"""
 
 
-
-# FUNCTION - get_ca_init_parser
-def get_ca_init_parser():
-    """
-    Factory function to create and return a configured CaInitParser instance. (ro)
-
-    :returns: An instance of CaInitParser ready for argument parsing.
-    """
-    parser:PKIBaseParser[CaInit] = CaInitParser(
-        prog="ftwpkicaroot",
-        description="Initialize a Root-CA with specified parameters.",
-        epilog="Example usage: ftwpkicaroot --help for more information.",
-    )
-    return parser   
-# !FUNCTION - get_parser
 
 
 if __name__ == "__main__": # pragma: no cover

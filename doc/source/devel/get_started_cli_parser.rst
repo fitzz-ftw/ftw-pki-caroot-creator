@@ -1,9 +1,9 @@
 Comand Line Parser
 ###################
 
->>> from ftwpki.ca_root_creator.cli_parser import CaInitParser
+>>> from ftwpki.ca_root_creator.cli_parser import ca_init_parser
 
->>> cip = CaInitParser()
+>>> cip = ca_init_parser()
 >>> cip #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
 PKIBaseParser(prog=..., 
     usage=None, 
@@ -40,21 +40,21 @@ CaInitArguments(certificate=''
 
 
 
->>> from ftwpki.ca_root_creator.cli_parser import get_ca_init_parser
+>>> from ftwpki.ca_root_creator.cli_parser import ca_init_parser
 
->>> get_ca_init_parser() #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-PKIBaseParser(prog='ftwpkicaroot', 
-    usage=None, 
-    description='Initialize a Root-CA with specified parameters.', 
-    formatter_class=<class 'argparse.HelpFormatter'>, 
-    conflict_handler='error', 
-    add_help=True)
-
->>> cip = CaInitParser(run_setup=False)
->>> cip #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+>>> ca_init_parser() #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
 PKIBaseParser(prog=..., 
     usage=None, 
     description=None, 
     formatter_class=<class 'argparse.HelpFormatter'>, 
     conflict_handler='error', 
     add_help=True)
+
+>>> cip = ca_init_parser(add_help=False)
+>>> cip #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+PKIBaseParser(prog=..., 
+    usage=None, 
+    description=None, 
+    formatter_class=<class 'argparse.HelpFormatter'>, 
+    conflict_handler='error', 
+    add_help=False)

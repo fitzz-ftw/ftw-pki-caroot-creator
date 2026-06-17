@@ -90,6 +90,7 @@ Enter Passphrase:
 .. !SECTION - Passwordhandling
 
 .. SECTION - Certificatecreating
+
 >>> from ftwpki.ca_root_creator.caroot import CertificateAuthority
 
 >>> ca_root_creator = CertificateAuthority(
