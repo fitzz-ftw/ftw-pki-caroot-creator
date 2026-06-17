@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+###### [0.0.4] - 2026-06-17
+
+###### Added
+- Introduce temporary DEV variants and integrate PKIPackage
+- Implement help system integration within the parser
+
+###### Changed
+- Refactor CLI parser architecture to use a factory pattern
+- Unify CLI parser logic and update documentation
+- Rename package to caroot-creator and centralize key parameters
+- Align implementation with streamlined base libraries
+- Update CLI argument parsing to utilize TomlPreParser
+- Rename legacy TOML functions to modernize utility interfaces
+
+###### Testing
+- Achieve 100% total test coverage across the component
+
 ## [0.0.3a2] - 2026-05-18
 
 ### Added
