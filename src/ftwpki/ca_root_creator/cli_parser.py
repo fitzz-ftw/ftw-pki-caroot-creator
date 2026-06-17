@@ -10,96 +10,67 @@ Command-line interface parser for Root-CA initialization, handling
 Distinguished Name data and file path configuration. (rw)
 """
 
-from argparse import Namespace
 from pathlib import Path
-from typing import cast
+from typing import TypeAlias
 
-from ftwpki.baselibs.cli_parser import (
-    DistinguishedNameParser,
+from ftwpki.baselibs._cli_parser import (
+    _HELP,
+    DistinguishedNameArguments,
+    load_help_entries,
+    parser_factory_creator,
 )
-from ftwpki.ca_root_creator.protocols import CaInitProtocol
+
+HELP_FILE = Path(__file__).parent.joinpath("cli_parser.help")
 
 
-# CLASS - CaInitParser
-class CaInitParser(DistinguishedNameParser):
+load_help_entries(_HELP, HELP_FILE)
+
+# print(MY)
+
+
+LANG="en"
+
+class CaInitArguments(DistinguishedNameArguments):
     """
-    Parser for Root-CA initialization arguments. (rw)
-
-    Extends the DistinguishedNameParser to include specific arguments for
-    passphrase secrets, key storage, and certificate filenames.
+    Class for Root-CA initialization arguments.
     """
+    __slots__ = ["passphrasefile", "conf_file", "key_name", "certificate"]
+    helpid = ["rootca"]
+    arg_data = {
+        "passphrasefile": {"flags": [], "kws": {}, "pre": {"nargs": "?"}},
+        "conf_file": {"flags": [], "kws": {}, "pre": {"nargs": "?"}},
+        "key_name": {"flags": ["-k", "--key", "--key-name"], "kws": {"default": ""}, "pre": {}},
+        "certificate": {
+            "flags": ["-c", "--cert", "--certificate"],
+            "kws": {"default": ""},
+            "pre": {},
+        },
+    }
 
-    def _setup_parser(self) -> None:
+    def __init__(self) -> None:
         """
-        Configure the argument parser with Root-CA specific options. (ro)
-
-        Sets up arguments for the passphrase file, private/public keys,
-        certificates, and the private storage directory.
+        Initialize the Root-CA argument container with empty values.
         """
-        super()._setup_parser()
-        self.add_argument(
-            "passphrasefile", help="Filename of the encrypted secret containing the CA passphrase."
-        )
-        self.add_argument(
-            "-k",
-            "--key",
-            "--private-key",
-            dest="private_key",
-            default="",
-            help="Optional specific filename for the generated private key.",
-        )
-        self.add_argument(
-            "-c",
-            "--cert",
-            "--certificate",
-            dest="certificate",
-            default="",
-            help="Optional specific filename for the root certificate.",
-        )
-        self.add_argument(
-            "-p",
-            "--pub",
-            "--public-key",
-            dest="public_key",
-            default="",
-            help="Optional specific filename for the public key.",
-        )
-        self.add_argument(
-            "--privatdir",
-            dest="privatdir",
-            default="",
-            help="Directory path for private key storage (overrides default).",
-        )
-
-    def parse_args(
-        self, args: list[str] | None = None, namespace: Namespace | None = None
-    ) -> CaInitProtocol:
-        """
-        Parse command-line arguments and cast to CaInitProtocol. (ro)
-
-        :param args: List of command-line argument strings.
-        :param namespace: Existing Namespace object to populate.
-        :returns: Arguments adhering to the CaInitProtocol interface.
-        """
-        return cast(CaInitProtocol, super().parse_args(args, namespace))
+        super().__init__()
+        self.passphrasefile:str=""
+        self.conf_file:str=""
+        self.key_name:str=""
+        self.certificate:str=""
 
 
-# !CLASS - CaInitParser
+"""
+Type alias for the Root-CA initialization argument container.
+"""
+CaInit: TypeAlias = CaInitArguments
 
-# FUNCTION - get_ca_init_parser
-def get_ca_init_parser() -> CaInitParser:
-    """
-    Factory function to create and return a configured CaInitParser instance. (ro)
+ca_init_parser = parser_factory_creator(CaInitArguments)
+"""
+Factory function for creating Root-CA initialization parsers.
 
-    :returns: An instance of CaInitParser ready for argument parsing.
-    """
-    parser = CaInitParser(
-        prog="ftwpkicaroot",
-        description="Initialize a Root-CA with specified parameters.",
-        epilog="Example usage: ftwpkicaroot --help for more information.",
-    )
-    return parser   
-# !FUNCTION - get_parser
+:type: Callable
+"""
+
+
 
 
 if __name__ == "__main__": # pragma: no cover
@@ -111,24 +82,39 @@ if __name__ == "__main__": # pragma: no cover
     option_flags = FAIL_FAST
     test_sum = 0
     test_failed = 0
-    
+    passed_files = 0
+
     # Pfad zu den dokumentierenden Tests
     testfiles_dir = Path(__file__).parents[3] / "doc/source/devel"
-    test_file = testfiles_dir / "get_started_cli_parser.rst"
-    
-    if test_file.exists():
-        print(f"--- Running Doctest for {test_file.name} ---")
-        doctestresult = testfile(
-            str(test_file),
-            module_relative=False,
-            verbose=be_verbose,
-            optionflags=option_flags,
-        )
-        test_failed += doctestresult.failed
-        test_sum += doctestresult.attempted
-        if test_failed == 0:
-            print(f"\nDocTests passed without errors, {test_sum} tests.")
+
+    test_files = [
+        # "test_new_parser.rst",
+          "get_started_cli_parser.rst",
+    ]
+    for file in test_files:
+        test_file = testfiles_dir / file
+        if test_file.exists():
+            print(f"--- Running Doctest for {test_file.name} ---")
+            doctestresult = testfile(
+                str(test_file),
+                module_relative=False,
+                verbose=be_verbose,
+                optionflags=option_flags,
+            )
+            test_failed += doctestresult.failed
+            test_sum += doctestresult.attempted
+            if doctestresult.failed > 0 and option_flags & FAIL_FAST:
+                print(f"Doctest result for {test_file.name}: {doctestresult}")
+                print(
+                    f"\nKeep going! You already passed {passed_files} files "
+                    f"with {test_sum} tests before this hit."
+                )
+                break  # Stop on first failure if FAIL_FAST is set
+            passed_files += 1
         else:
-            print(f"\nDocTests failed: {test_failed} tests.")
+            print(f"⚠️ Warning: Test file {test_file.name} not found.")
+    if test_failed == 0:
+        print(f"\nDocTests passed without errors, {test_sum} tests.")
     else:
-        print(f"⚠️ Warning: Test file {test_file.name} not found.")
+        if not option_flags & FAIL_FAST:
+            print(f"\nDocTests failed: {test_failed} tests out of {test_sum}.")
